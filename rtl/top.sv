@@ -1,8 +1,9 @@
-module top #(
-    parameter A_WIDTH = 20,
-    parameter D_WIDTH = 32
-) (
-    input logic clk, 
+module top(
+    input logic clk,
+    input logic rst,
+    output logic [31:0] a0;
 );
-    
+
+
+
 endmodule
