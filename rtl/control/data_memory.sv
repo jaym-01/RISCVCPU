@@ -1,27 +1,43 @@
 module data_memory #(
     parameter 
     A_WIDTH=20
-)
-(
+) (
     input logic clk,
-    input logic [31:0] ALUResult,
-    input logic [31:0] WriteData,
-    input logic MemWrite,
-    output logic [31:0] ReadData,
-
-    // have access to the instruction, to determine LB LW
+    input logic [31:0] A,
+    input logic [31:0] WD,
+    input logic WE,
+    input logic [2:0] MemSrc
+    output logic [31:0] RD,
 );
     logic [7:0] data_mem_arr [2**ADDRESS_WIDTH-1:0];
-    
     logic [A_WIDTH-1:0] addr;
-    logic [7:0] temp;
-    
-    assign addr = ALUResult[A_WIDTH-1:0];
-    assign temp = data_mem_arr[addr];
-    assign ReadData = {24{1'b0}, temp}; // LBU operation
+    assign addr = A[A_WIDTH-1:0];
 
+    // load 
+    logic sign_bit;
+    assign sign_bit = MemSrc[2] == 1 ? 1'b0 : data_mem_arr[addr][7]; // if MemSrc[2] == 1, then unsigned
+    always_comb begin 
+        if (MemSrc[1:0] == 2'b00) {
+            RD = {{24{sign_bit}}, data_mem_arr[addr]}; // LBU operation
+        } else if (MemSrc[1:0] == 2'b01) {
+            RD = {{16{sign_bit}}, data_mem_arr[addr + 1], data_mem_arr[addr]}; // LBU operation
+        } else {
+            RD = {data_mem_arr[addr + 3], data_mem_arr[addr + 2], data_mem_arr[addr + 1], data_mem_arr[addr]}; // LBU operation
+        }
+    end;
+    
+    // store
     always_ff(@posedge clk) {
-        if (MemWrite) data_mem_arr[addr] = WriteData[7:0]; // Store write data [7:0] in data_mem_arr
+        if (WE == 1) {
+            data_mem_arr[addr] = WD[7:0];
+            if (MemSrc[1:0] == 2'b01) {
+                data_mem_arr[addr + 1] = WD[15:8]; // hald word
+            } else if (MemSrc[1:0] == 2'b10) {
+                data_mem_arr[addr + 1] = WD[15:8];
+                data_mem_arr[addr + 2] = WD[23:16];
+                data_mem_arr[addr + 3] = WD[31:24];
+            }
+        }
     }
     
 endmodule
