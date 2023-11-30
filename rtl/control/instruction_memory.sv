@@ -10,5 +10,5 @@ module instruction_memory #(
     logic [7:0] instr_arr [2**A_WIDTH-1:0];
     $readmemh("reference/program.mem", instr_arr);
 
-    RD = {instr_arr[A+3], instr_arr[A+2], instr_arr[A+1], instr_arr[A]};
+    assign RD = {instr_arr[A+3], instr_arr[A+2], instr_arr[A+1], instr_arr[A]};
 endmodule
