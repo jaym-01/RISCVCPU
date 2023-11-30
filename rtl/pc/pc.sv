@@ -4,7 +4,7 @@ module pc#(
 (
     input logic clk;
     input logic rst;
-    input logic [DATA_WIDTH-1:0] c_4;
+    input logic [DATA_WIDTH-1:0] pc_4;
     input logic [DATA_WIDTH-1:0] pc_b;
     input logic [DATA_WIDTH-1:0] pc_r;
     input logic [1:0] pc_src;
