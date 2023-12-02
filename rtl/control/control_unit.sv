@@ -14,19 +14,19 @@ module control_unit #(
     output logic ALUSrc,
     output logic [2:0] ImmSrc,
     output logic RegWrite,
-    output logic RWSrc,
+    output logic RWSrc
 );
     
 
     always_comb begin
         
         // 1. PCSrc: 0 for PC + 4, 1 for PC + Imm, 2 for RET
-        case(op):
+        case(op)
             7'b1101111: PCSrc = 2'b01; // JAL
             7'b1100011: PCSrc = Zero ? 2'b01 : 2'b00; // BNE
             7'b1100111: PCSrc = 2'b11; // JALR
             default: PCSrc = 2'b00;
-        endcase;
+        endcase
         
 
         // 2. ResultSrc: 1 read from Data MEM, else 0 (only LBU uses this)
@@ -36,22 +36,22 @@ module control_unit #(
         MemWrite = (op == 7'b0100011) ? 1 : 0;
 
         // MemSrc = funct3 (just to make things clear)
-        MemSrc = funct3
+        MemSrc = funct3;
 
         // 4. Reduced version of ALUControl to account for just 2 ins
-        ALUControl = (op == 7'b0110111) ? 3'b001 : 3'b000 // if LUI, then 001, else 000 (add)
+        ALUControl = (op == 7'b0110111) ? 3'b001 : 3'b000; // if LUI, then 001, else 000 (add)
 
         // 5. ALUSrc: 1 for Imm, 0 for rs2
         ALUSrc = (op == 7'b0000011 || op == 7'b0100011 || op == 7'b0010011 || op == 7'b0110111) ? 1 : 0; // LBU, SB, ADDI, LUI: 1 else 0
         
         // 6. ImmSrc 3 bits
-        case(op):
+        case(op)
             7'b1100011: ImmSrc = 1; // B Type Ins
             7'b0100011: ImmSrc = 2; // S Type Ins
             7'b1101111: ImmSrc = 3; // J Type Ins
             7'b0110111: ImmSrc = 4; // LUI Ins
             default: ImmSrc = 0; // Default
-        endcase;
+        endcase
 
 
         // 7. RegWrite: 1 if write to register else 0
@@ -68,8 +68,4 @@ module control_unit #(
         RWSrc = (op == 7'b1100111 || op == 7'b1101111) ? 1 : 0;  // JAL & JALR 
     end
     
-
-    
-
-
 endmodule

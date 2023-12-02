@@ -5,20 +5,17 @@ module alu #(
     input logic [DATA_WIDTH-1:0] op2,
     input logic [2:0] ALUctrl,
     output logic [DATA_WIDTH-1:0] SUM,
-    output logic zero,
-)
-
-    logic [DATA_WIDTH-1:0] tmpSum;
-
+    output logic zero
+);
     assign zero = op1 == op2;
 
     always_comb
-        case ALUctrl
-            3'b001: SUM = op2;
+        case(ALUctrl)
             3'b000: SUM = op1 + op2;
-            3'b010: SUM = op1 && op2;
-            3'b011: SUM = op1 || op2；
-            3'b101: if(op1<op2), SUM = {DATA_WIDTH-1{1'b0}, {1'b1}};
+            3'b001: SUM = op2;
+            3'b010: SUM = op1 & op2;
+            3'b011: SUM = op1 | op2;
+            3'b101: if(op1 < op2) SUM = {{DATA_WIDTH-1{1'b0}}, {1'b1}};
                     else SUM = {DATA_WIDTH{1'b0}};
             default: SUM = op1 + op2;
         endcase

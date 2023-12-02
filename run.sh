@@ -1,21 +1,28 @@
 #!/bin/bash
 
-# To be done later
-task="task4"
-top_name="f1_top"
+dir="rtl"
+top_name="riscv_top"
 
 sv_files=(
-    "$task/$top_name.sv"
-    "$task/f1_fsm.sv"
-    "$task/clktick.sv"
-    "$task/delay.sv"
-    "$task/lfsr.sv"
+    "$dir/$top_name.sv"
+    "$dir/alu/alu.sv"
+    "$dir/alu/regfile.sv"
+    "$dir/control/control_unit.sv"
+    "$dir/control/data_memory.sv"
+    "$dir/control/extend.sv"
+    "$dir/control/extend.sv"
+    "$dir/control/instruction_memory.sv"
+    "$dir/pc/pc.sv"
 )
 
 rm -rf obj_dir
 
-verilator -Wall --cc --trace "${sv_files[@]}" --exe $task/"$top_name"_tb.cpp
+verilator -Wall --cc --trace "${sv_files[@]}" --exe $dir/f1_riscv_tb.cpp
  
 make -j -C obj_dir/ -f V$top_name.mk V$top_name
 
+echo "starting simulation"
+
 obj_dir/V"$top_name"
+
+echo "ending simulation"
