@@ -1,4 +1,4 @@
-module top#(
+module riscv_top#(
     parameter INS_ADDRESS_WIDTH = 12,
     DATA_WIDTH = 32
 )(
@@ -7,7 +7,7 @@ module top#(
     output logic [DATA_WIDTH-1:0] a0
 );
     // pc wires
-    logic [INS_ADDRESS_WIDTH-1:0] pc_val;  // **WILL NOT WORK**
+    logic [INS_ADDRESS_WIDTH-1:0] pc_val;
     logic [INS_ADDRESS_WIDTH-1:0] pc_incr_4;
     logic [INS_ADDRESS_WIDTH-1:0] pc_target;
 

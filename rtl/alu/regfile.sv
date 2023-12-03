@@ -21,7 +21,7 @@ module regfile #(
 
     assign RD1 = regs[AD1];
     assign RD2 = regs[AD2];
-    assign a0 = regs['h10];  // a0 made async **
+    assign a0 = regs['d10];  // a0 made async **
 
     always_ff @(posedge clk) begin
         if(WE3 && AD3 != 0) regs[AD3] <= WD3;

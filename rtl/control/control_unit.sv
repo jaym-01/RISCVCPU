@@ -23,8 +23,8 @@ module control_unit #(
         // 1. PCSrc: 0 for PC + 4, 1 for PC + Imm, 2 for RET
         case(op)
             7'b1101111: PCSrc = 2'b01; // JAL
-            7'b1100011: PCSrc = Zero ? 2'b01 : 2'b00; // BNE
-            7'b1100111: PCSrc = 2'b11; // JALR
+            7'b1100011: PCSrc = Zero ? 2'b00 : 2'b01; // BNE
+            7'b1100111: PCSrc = 2'b10; // JALR
             default: PCSrc = 2'b00;
         endcase
         

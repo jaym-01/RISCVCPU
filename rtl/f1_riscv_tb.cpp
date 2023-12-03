@@ -2,7 +2,7 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-#define MAX_SIM_CYCLE 1000000
+#define MAX_SIM_CYCLE 2000
 
 int main(int argc, char **argv, char** env){
     int simCycle, clk;
