@@ -8,7 +8,7 @@
 
 > Liam: Register File, ALU
 
-> Jay: Top file, Testbench, Testing#
+> Jay: Top file, Testbench, Testing
 
 ## Design of the Single Cycle CPU
 

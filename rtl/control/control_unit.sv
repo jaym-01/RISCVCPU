@@ -38,8 +38,8 @@ module control_unit #(
         // MemSrc = funct3 (just to make things clear)
         MemSrc = funct3;
 
-        // 4. Reduced version of ALUControl to account for just 2 ins
-        ALUControl = (op == 7'b0110111) ? 3'b001 : 3'b000; // if LUI, then 001, else 000 (add)
+        // 4. Reduced version of ALUControl to account for just 3 ins
+        ALUControl = (op == 7'b0110111) ? 3'b010 : (funct7 == 7'b0100000 ? 3'b001 : 3'b000); // if LUI, then 010, else (if sub, then 001, else add (000))
 
         // 5. ALUSrc: 1 for Imm, 0 for rs2
         ALUSrc = (op == 7'b0000011 || op == 7'b0100011 || op == 7'b0010011 || op == 7'b0110111) ? 1 : 0; // LBU, SB, ADDI, LUI: 1 else 0
