@@ -1,3 +1,4 @@
+#include "vbuddy.cpp"
 #include "Vriscv_top.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
@@ -18,6 +19,13 @@ int main(int argc, char **argv, char** env){
     top->trace(tfp, 99);
     tfp->open("test/F1Waveform.vcd");
 
+    // init vbuddy
+    if(vbdOpen() != 1) return(-1);
+    vbdHeader("RISC V: F1");
+
+    // flag on vbuddy set to one-shot
+    vbdSetMode(1);
+
     // init input
     top->clk = 1;
     top->rst = 1;
@@ -30,8 +38,13 @@ int main(int argc, char **argv, char** env){
             top->eval();
         }
 
+        // dipslay output on the vbuddy light bar
+        vbdBar(top->a0 & 0xFF);
+
         top->rst = (simCycle < 2);
 
+        // display clock cycle on the vbuddy
+        vbdCycle(simCycle+1);
         if(Verilated::gotFinish()) exit(0);
     }
 

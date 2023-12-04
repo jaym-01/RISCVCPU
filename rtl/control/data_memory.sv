@@ -13,6 +13,9 @@ module data_memory #(
     logic [A_WIDTH-1:0] addr;
     assign addr = A[A_WIDTH-1:0];
 
+    // only for the pdf
+    initial $readmemh("reference/triangle.mem", data_mem_arr, 'h10000);
+
     // load 
     logic sign_bit;
     assign sign_bit = MemSrc[2] == 1 ? 1'b0 : data_mem_arr[addr][7]; // if MemSrc[2] == 1, then unsigned

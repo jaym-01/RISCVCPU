@@ -61,6 +61,7 @@ module control_unit #(
             || op == 7'b0000011 // LB and other load ins
             || op == 7'b1100111 // JALR
             || op == 7'b1101111 // JAL
+            || op == 7'b110111  // LUI
         ) RegWrite = 1;
         else RegWrite = 0;
 

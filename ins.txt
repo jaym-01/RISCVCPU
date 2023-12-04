@@ -6,3 +6,4 @@
 5. ADDI (Add immediate)
 7. LUI (Load upper immediate)
 8. BNE (Branch not equals)
+9. SUB

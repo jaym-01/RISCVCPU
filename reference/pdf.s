@@ -18,19 +18,19 @@ _loop1:                         # repeat
     RET
 
 build:      # function to build prob dist func (pdf)
-    LI      a1, base_data       # a1 = base address of data array
-    LI      a2, 0               # a2 = offset into of data array 
-    LI      a3, base_pdf        # a3 = base address of pdf array
-    LI      a4, max_count       # a4 = maximum count to terminate
+    LI      a1, base_data       # a1 = base address of data array 24
+    LI      a2, 0               # a2 = offset into of data array 28
+    LI      a3, base_pdf        # a3 = base address of pdf array 2c
+    LI      a4, max_count       # a4 = maximum count to terminate 30
 _loop2:                         # repeat
-    ADD     a5, a1, a2          #     a5 = data base address + offset
-    LBU     t0, 0(a5)           #     t0 = data value
-    ADD     a6, t0, a3          #     a6 = index into pdf array
-    LBU     t1, 0(a6)           #     t1 = current bin count
-    ADDI    t1, t1, 1           #     increment bin count
-    SB      t1, 0(a6)           #     update bin count
-    ADDI    a2, a2, 1           #     point to next data in array
-    BNE     t1, a4, _loop2      # until bin count reaches max
+    ADD     a5, a1, a2          #     a5 = data base address + offset 34
+    LBU     t0, 0(a5)           #     t0 = data value 38
+    ADD     a6, t0, a3          #     a6 = index into pdf array 3c
+    LBU     t1, 0(a6)           #     t1 = current bin count 40
+    ADDI    t1, t1, 1           #     increment bin count 44
+    SB      t1, 0(a6)           #     update bin count 48 
+    ADDI    a2, a2, 1           #     point to next data in array 4c
+    BNE     t1, a4, _loop2      # until bin count reaches max 50
     RET
 
 display:    # function send PDF array value to a0 for display
