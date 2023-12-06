@@ -26,6 +26,8 @@ int main(int argc, char **argv, char** env){
     // flag on vbuddy set to one-shot
     vbdSetMode(1);
 
+    bool show_signal = false;
+
     // init input
     top->clk = 1;
     top->rst = 1;
@@ -39,9 +41,11 @@ int main(int argc, char **argv, char** env){
         }
 
         // dipslay output graph on the vbuddy
-        if(simCycle > 123703){
+        // only after the 'display' subroutine
+        if(show_signal || top->a0 != 0){
             vbdPlot(top->a0, 0, 255);
             vbdCycle(simCycle+1);
+            show_signal = true;
         }
         
 

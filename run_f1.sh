@@ -15,6 +15,10 @@ sv_files=(
     "$dir/pc/pc.sv"
 )
 
+# find the text which loads the pdf program and gets it to load the f1 program instead
+sed -i '10 s/.*/    initial $readmemh("test\/f1.s.hex", instr_arr);/' rtl/control/instruction_memory.sv
+sed -i '17 s/.*//' rtl/control/data_memory.sv
+
 rm -rf obj_dir
 
 verilator -Wall --cc --trace "${sv_files[@]}" --exe $dir/f1_riscv_tb.cpp

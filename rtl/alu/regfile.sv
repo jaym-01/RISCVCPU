@@ -17,6 +17,7 @@ module regfile #(
 
     initial begin
         regs[0] = {DATA_WIDTH{1'b0}};
+        regs['d10] = {DATA_WIDTH{1'b0}};
     end
 
     assign RD1 = regs[AD1];
