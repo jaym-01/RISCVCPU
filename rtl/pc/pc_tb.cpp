@@ -52,7 +52,7 @@ int main(int argc, char **argv, char** env){
        //for adding 4 instruction
         top->pc_4 =0xFF4;
         top->pc_b =0xFEC;
-        top->pc_r =0x1C;
+        top->pc_r =0x01C;
         //pc_next should be 0xFF4
      }
  }
