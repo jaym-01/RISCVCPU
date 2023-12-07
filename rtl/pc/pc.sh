@@ -3,7 +3,7 @@
 # cleanup
 
 rm -rf obj_dir
-em -f pc.vcd
+rm -f pc.vcd
 
 #run Verilator to translate Verilog into C++
 verilator -Wall --cc --trace pc.sv --exe pc_tb.cpp
