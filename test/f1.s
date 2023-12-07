@@ -10,7 +10,8 @@ iloop:
     addi    a1, a1, -1          # decrement a1 
     bne     a1, zero, iloop     # if counter not equals to 0, loop
 mloop:     
-    add    a0, a0, a0           # increment a0 once a1 has counted down
+    add     a0, a0, a0          # increment a0 once a1 has counted down
+    addi    a0, a0, 1           # fill in the gap (LSB) caused by shifting
     addi    t2, zero, 0x9       # set t2 to be 9
     addi    a1, zero, 0x10      # reset a1 
     bne     a0, t2, iloop       # if t2 is 9, return to inner loop
