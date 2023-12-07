@@ -22,10 +22,7 @@ int main(int argc, char **argv, char** env){
     // init vbuddy
     if(vbdOpen() != 1) return(-1);
     vbdHeader("RISC V: PDF");
-
-    // flag on vbuddy set to one-shot
-    vbdSetMode(1);
-
+    
     bool show_signal = false;
 
     // init input

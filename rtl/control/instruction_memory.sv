@@ -7,7 +7,7 @@ module instruction_memory #(
     // byte addressing:
     logic [7:0] instr_arr [2**A_WIDTH-1:0];
 
-    initial $readmemh("test/f1.hex", instr_arr);
+    initial $readmemh("test/pdf.hex", instr_arr);
 
     assign RD = {instr_arr[A+3], instr_arr[A+2], instr_arr[A+1], instr_arr[A]};
 endmodule

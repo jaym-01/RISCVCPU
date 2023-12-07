@@ -23,9 +23,6 @@ int main(int argc, char **argv, char** env){
     if(vbdOpen() != 1) return(-1);
     vbdHeader("RISC V: F1");
 
-    // flag on vbuddy set to one-shot
-    vbdSetMode(1);
-
     // init input
     top->clk = 1;
     top->rst = 1;
