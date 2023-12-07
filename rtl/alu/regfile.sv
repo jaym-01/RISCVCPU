@@ -16,14 +16,15 @@ module regfile #(
     logic [DATA_WIDTH-1:0] regs [2**ADDRESS_WIDTH-1:0];
 
     initial begin
-        regs[0]= {ADDRESS_WIDTH{1'b0}};
+        regs[0] = {DATA_WIDTH{1'b0}};
+        regs['d10] = {DATA_WIDTH{1'b0}};
     end
 
     assign RD1 = regs[AD1];
     assign RD2 = regs[AD2];
-    assign a0 = regs[ADDRESS_WIDTH'h10];  // a0 made async **
+    assign a0 = regs['d10];  // a0 made async **
 
-    @always_ff @(posedge clk) begin
+    always_ff @(posedge clk) begin
         if(WE3 && AD3 != 0) regs[AD3] <= WD3;
     end
 
