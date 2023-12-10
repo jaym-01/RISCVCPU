@@ -14,18 +14,18 @@ module data_memory #(
     assign addr = A[A_WIDTH-1:0];
 
     // only for the pdf
-    initial $readmemh("test/gaussian.mem", data_mem_arr, 'h10000);
+
 
     // load 
     logic sign_bit;
     assign sign_bit = MemSrc[2] == 1 ? 1'b0 : data_mem_arr[addr][7]; // if MemSrc[2] == 1, then unsigned
     always_comb begin 
         if (MemSrc[1:0] == 2'b00)
-            RD = {{24{sign_bit}}, data_mem_arr[addr]}; // LBU operation
+            RD = {{24{1'b0}}, data_mem_arr[addr]}; // LBU operation
         else if (MemSrc[1:0] == 2'b01)
-            RD = {{16{sign_bit}}, data_mem_arr[addr + 1], data_mem_arr[addr]}; // LBU operation
+            RD = {{16{1'b0}}, data_mem_arr[addr + 1], data_mem_arr[addr]}; // LHU operation
         else
-            RD = {data_mem_arr[addr + 3], data_mem_arr[addr + 2], data_mem_arr[addr + 1], data_mem_arr[addr]}; // LBU operation
+            RD = {data_mem_arr[addr + 3], data_mem_arr[addr + 2], data_mem_arr[addr + 1], data_mem_arr[addr]}; // LW operation
     end
     
     // store

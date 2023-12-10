@@ -20,8 +20,8 @@ int main(int argc, char **argv, char** env){
     tfp->open("test/F1Waveform.vcd");
 
     // init vbuddy
-    if(vbdOpen() != 1) return(-1);
-    vbdHeader("RISC V: F1");
+    // if(vbdOpen() != 1) return(-1);
+    // vbdHeader("RISC V: F1");
 
     // init input
     top->clk = 1;
@@ -36,12 +36,12 @@ int main(int argc, char **argv, char** env){
         }
 
         // dipslay output on the vbuddy light bar
-        vbdBar(top->a0 & 0xFF);
+        // vbdBar(top->a0 & 0xFF);
 
         top->rst = (simCycle < 2);
 
         // display clock cycle on the vbuddy
-        vbdCycle(simCycle+1);
+        // vbdCycle(simCycle+1);
         if(Verilated::gotFinish()) exit(0);
     }
 
