@@ -16,7 +16,7 @@ sv_files=(
 )
 
 # find the text which loads the f1 program and gets it to load the pdf program instead
-sed -i '10 s/.*/    initial $readmemh("test\/pdf.hex", instr_arr);/' rtl/control/instruction_memory.sv
+# sed -i '10 s/.*/    initial $readmemh("test\/pdf.hex", instr_arr);/' rtl/control/instruction_memory.sv
 
 data_mem="gaussian"
 
@@ -31,7 +31,7 @@ then
     data_mem="triangle"
 fi
 
-sed -i '17 s/.*/    initial $readmemh("test\/'$data_mem'.mem", data_mem_arr, '"'"'h10000);/' rtl/control/data_memory.sv
+# sed -i '17 s/.*/    initial $readmemh("test\/'$data_mem'.mem", data_mem_arr, '"'"'h10000);/' rtl/control/data_memory.sv
 
 rm -rf obj_dir
 
