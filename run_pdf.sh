@@ -10,7 +10,6 @@ sv_files=(
     "$dir/control/control_unit.sv"
     "$dir/control/data_memory.sv"
     "$dir/control/extend.sv"
-    "$dir/control/extend.sv"
     "$dir/control/instruction_memory.sv"
     "$dir/pc/pc.sv"
 )

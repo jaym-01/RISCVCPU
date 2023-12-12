@@ -6,7 +6,6 @@ module control_unit #(
     input logic Zero,
 
     output logic [1:0] PCSrc,
-    output logic ResultSrc,
     output logic MemWrite,
     output logic [2:0] MemSrc,
     
@@ -14,7 +13,7 @@ module control_unit #(
     output logic ALUSrc,
     output logic [2:0] ImmSrc,
     output logic RegWrite,
-    output logic RWSrc
+    output logic [1:0] RegWSrc
 );
     
 
@@ -27,10 +26,6 @@ module control_unit #(
             7'b1100111: PCSrc = 2'b10; // JALR
             default: PCSrc = 2'b00;
         endcase
-        
-
-        // 2. ResultSrc: 1 read from Data MEM, else 0 (only LBU uses this)
-        ResultSrc = (op == 7'b0000011) ? 1 : 0;
 
         // 3. MemWrite: 1 if write to Data MEM, else 0 (only SB uses this)
         MemWrite = (op == 7'b0100011) ? 1 : 0;
@@ -66,7 +61,12 @@ module control_unit #(
         else RegWrite = 0;
 
         // 8: RWSrc: 1 if RegWrite Data = PC + 4 else 0
-        RWSrc = (op == 7'b1100111 || op == 7'b1101111) ? 1 : 0;  // JAL & JALR 
+        case (op)
+            7'b0000011: RegWSrc = 2'b01; // BNE
+            7'b1100111: RegWSrc = 2'b10; // JALR
+            7'b1101111: RegWSrc = 2'b10; // JAL
+            default: RegWSrc = 2'b00; // ALURes
+        endcase;
     end
     
 endmodule

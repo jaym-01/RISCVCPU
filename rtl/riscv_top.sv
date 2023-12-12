@@ -16,14 +16,13 @@ module riscv_top#(
 
     // control signal wires
     logic [1:0] pc_src;
-    logic result_src;
     logic mem_write;
     logic [2:0] mem_src;
     logic [2:0] alu_control;
     logic alu_src;
     logic [2:0] imm_src;
     logic reg_write;
-    logic rw_src;
+    logic [1:0] rw_src;
 
     // register file wires
     logic [DATA_WIDTH-1:0] rd1;
@@ -38,7 +37,6 @@ module riscv_top#(
 
     // data memory wires
     logic [DATA_WIDTH-1:0] read_data;
-    logic [DATA_WIDTH-1:0] result;
 
     // MUXes for pc values 
     assign pc_incr_4 = pc_val + 0'b100;
@@ -47,11 +45,9 @@ module riscv_top#(
     // MUX for ALU
     assign srcB = alu_src? imm_ext : rd2;
 
-    // data memory MUX
-    assign result = result_src? read_data : alu_result;
-
-    // register file mux
-    assign wd3 = rw_src? {{DATA_WIDTH-INS_ADDRESS_WIDTH{1'b0}}, pc_incr_4} : result;
+    // Mux for Write Data
+    assign wd3 = rw_src == 2'b01 ? read_data 
+        : rw_src == 2'b10 ? {{DATA_WIDTH-INS_ADDRESS_WIDTH{1'b0}}, pc_incr_4} : alu_result;
 
     pc rv_pc(
         .clk(clk),
@@ -74,14 +70,13 @@ module riscv_top#(
         .funct7(instr[31:25]),
         .Zero(zero),
         .PCSrc(pc_src),
-        .ResultSrc(result_src),
         .MemWrite(mem_write),
         .MemSrc(mem_src),
         .ALUControl(alu_control),
         .ALUSrc(alu_src),
         .ImmSrc(imm_src),
         .RegWrite(reg_write),
-        .RWSrc(rw_src)
+        .RegWSrc(rw_src)
     );
 
     extend rv_sign_ext(
