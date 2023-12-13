@@ -197,6 +197,7 @@ One mistake I made here was assigning the value of pc_src.Because testbench usin
 
 After running the shell script pc.vcd file was generated and displayed in GTKwave
 -As shown in the picture when the pc_src=10,corresponding to the output will be same as the input of pc_r.The actual output matched the expected value.
+
 ![Wavform generated](https://i.postimg.cc/g2ZC1NGK/Full-Size-Render.jpg)
 ---
 
