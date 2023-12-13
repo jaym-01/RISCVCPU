@@ -8,8 +8,8 @@ In this project, I was responsiable for the following components:
 
 - Program Counter
   -systemverilog file for pc
-  -testbench for pc
-  -test results for pc(GTKwave)
+   -testbench for pc
+    -test results for pc(GTKwave) 
 
 After finishing and debuging the code for program counter I started simulation for the program.   
 
