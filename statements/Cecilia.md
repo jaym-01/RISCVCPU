@@ -1,4 +1,4 @@
-# Personal Statement: CeciliaO(Zequan Li)
+# Personal Statement: Cecilia(Zequan Li)
 
 ## **Overview**
 
@@ -180,7 +180,7 @@ int main(int argc, char **argv, char** env){
 ```
 In this code I tried different combination of address and compare the output with the expected value
 
-One mistake I made here was assigning the value of pc_src.Because testbench using C++ and I specifeid the value in systemverilog.After changing it the program works well.
+One mistake I made here was assigning the value of pc_src.Because testbench using C++ and I specifeid the value in systemverilog.Another was unmatched bits in assigning memory address value.At first I defined the Data width was 12 bits but here I used 32 bits.After changing it the program works well.
 
 **The old code**
 ```C++
