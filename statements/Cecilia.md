@@ -196,7 +196,7 @@ One mistake I made here was assigning the value of pc_src.Because testbench usin
 ### Test results
 
 After running the shell script pc.vcd file was generated and displayed in GTKwave
-![Wavform generated](https://postimg.cc/21C9Zdbq)
+![Wavform generated](<a href='https://postimg.cc/21C9Zdbq' target='_blank'><img src='https://i.postimg.cc/21C9Zdbq/Full-Size-Render.jpg' border='0' alt='Full-Size-Render'/></a>)
 -As shown in the picture when the pc_src=10,corresponding to the output will be same as the input of pc_r.The actual output matched the expected value.
 
 ---
