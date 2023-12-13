@@ -6,20 +6,18 @@ In this project, I was responsiable for the following components:
 
 **Single Cycle**
 
--Program Counter
-  systemverilog file for pc
-  
-  testbench for pc
-  
-  test results for pc(GTKwave) 
+- Program Counter
+   systemverilog file for pc
+   testbench for pc
+   test results for pc(GTKwave) 
 
 After finishing and debuging the code for program counter I started simulation for the program.   
 
 **Data Cache**
 
 - I seperate the cache design into two parts:
-  -Simple direct mapped cahce
-  *2-way set associative cache
+    Simple direct mapped cahce
+    2-way set associative cache
 
 ## Single Cycle
 
