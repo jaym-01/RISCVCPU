@@ -8,8 +8,8 @@ In this project, I was responsiable for the following components:
 
 - Program Counter
   -systemverilog file for pc
-   -testbench for pc
-    -test results for pc(GTKwave) 
+  *testbench for pc
+  +test results for pc(GTKwave) 
 
 After finishing and debuging the code for program counter I started simulation for the program.   
 
@@ -17,7 +17,7 @@ After finishing and debuging the code for program counter I started simulation f
 
 - I seperate the cache design into two parts:
   -Simple direct mapped cahce
-  -2-way set associative cache
+  *2-way set associative cache
 
 ## Single Cycle
 
@@ -26,7 +26,7 @@ After finishing and debuging the code for program counter I started simulation f
 The core of program counter is a MUX. I need to integrate all the different instructions into MUX and specify collected signals into different types of instruction implementations. In this part, I need to consider the components from other members' block and understand each logic.Finally I mapped the hardware logic into software logic and done the simulation.
 
 Also,as for personal work at beginning, testing program seems is not mandatory. However, when I realized that we work as a team, it will be very helpful for us to test our own program well before the final integration and verification stage, because we can make sure that the previous progress is correct.This makes our team more efficient and saves a lot of time.
-![Block diagram of PC](https://postimg.cc/QHFJ0Pb5)
+![Block diagram of PC](https://i.postimg.cc/WbnYbcq9/IMG-1709.jpg)
 
 ### Program Counter
 
@@ -34,13 +34,13 @@ Signals:
 -pc_src:
  -to select three different pc instructions:
   -Regular case
-  -Branch
-  -Jump
+  *Branch
+  +Jump
 -clock and reset:
  -Asynchronous reset
 -Output:
  -PC(external)
- -pc_next(internal)
+ *pc_next(internal)
 
 Outputs from ALU&control unit goes to PC inputs:
 
@@ -63,7 +63,7 @@ always_comb
         endcase
 ```
 Using default to cover all "don't care conditions"
-![Block diagram of mux](https://postimg.cc/YLLZKxgC)
+![Block diagram of mux](https://i.postimg.cc/gjgWhS28/IMG-1711.jpg)
 
 **PC flipflop**
 
@@ -73,7 +73,7 @@ always_ff @(posedge clk, posedge rst)
        if(rst) PC <= {ADDRESS_WIDTH{1'b0}};
        else PC <= pc_next;
 ```
-![Block diagram of FF](https://postimg.cc/ZvktqgJd)
+![Block diagram of FF](https://i.postimg.cc/900WL5SJ/IMG-1712.jpg)
 
 
 **Mistakes made in this part:**
@@ -106,8 +106,8 @@ always_comb
 
 What I have done:
 1.Created a testbench for Program counter
-2.In the testbench tried different combinations of input and compare the output with expected
-3.Created a shell file to run the simulation
+1.In the testbench tried different combinations of input and compare the output with expected
+1.Created a shell file to run the simulation
 **Code For Testbench**
 ```C++
 #include "verilated.h"
