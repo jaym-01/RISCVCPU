@@ -16,10 +16,8 @@ After finishing and debuging the code for program counter I started simulation f
 **Data Cache**
 
 - I seperate the cache design into two parts:
-    - cache unit
-    - cache controller
-    - set
-    - replace controller
+    - Direct mapped cache 
+    - Two-way set associative cache
 
 ## Single Cycle
 
@@ -220,7 +218,12 @@ The address width is 32 bits so t+b+S=32
 
 The Cache is responsible for recieving inputs from the address and data from the CPU, and sending the corresponding control signal to the Cache Controller to obtain the corresponding control signal, so as to control the read and write instruction in cache.Finally return the Set output to the CPU.
 
-
+**Parameter**
+| Parameters     | Meaning                                            |                                                                     
+| ------------- | ----------------------------------------------------|
+| SETS          |   Number of sets in the cache.                                                  |                                            
+| WAYS          |   Number of cache lines (ways) per set.                                                  |
+| WOORD_PER_LINE|   Number of words per cache line.                                                  |                          
 
 
 
