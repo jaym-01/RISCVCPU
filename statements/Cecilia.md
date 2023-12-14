@@ -31,16 +31,16 @@ Also,as for personal work at beginning, testing program seems is not mandatory. 
 ### Program Counter
 
 Signals:
--pc_src:
- -to select three different pc instructions:
-  -Regular case
-  *Branch
-  +Jump
--clock and reset:
- -Asynchronous reset
--Output:
- -PC(external)
- *pc_next(internal)
+- pc_src:
+ - to select three different pc instructions:
+  - Regular case
+  * Branch
+  + Jump
+- clock and reset:
+ - Asynchronous reset
+- Output:
+ - PC(external)
+ * pc_next(internal)
 
 Outputs from ALU&control unit goes to PC inputs:
 
@@ -203,8 +203,44 @@ After running the shell script pc.vcd file was generated and displayed in GTKwav
 
 ## Data Cache
 
-For adding cache memory of RISCV processor, I was in charge of the direct mapped cache and associated 2-way cache
+For adding cache memory of RISCV processor, I was in charge of the 32 bits 256 bytes cache memory.The cache implementation uses 4-way associative mapping: a total of 4 sets, each containing 4 lines, each line holding 4 words (word = 4 Bytes).The LRU (Least Recently Used) replacement policy is used and the Write Back method is used when writing to memory.
 
+**Parameter**
+
+In this project I used:
+TAG_WIDTH:the number of bits for the tag,here I used t=26
+SET_WIDTH:the number of bits for set index,I choosed 4 sets so the index s=2
+OFFSET_WIDTH:the number of bits for block offset,I used b=4
+SET_SIZE:the number of lines used in a set I used n=4
+
+The address width is 32 bits so t+b+S=32
+
+### Cache
+
+The Cache is responsible for recieving inputs from the address and data from the CPU, and sending the corresponding control signal to the Cache Controller to obtain the corresponding control signal, so as to control the read and write instruction in cache.Finally return the Set output to the CPU.
+
+
+
+
+
+
+
+
+### Cache controller
+
+
+
+
+
+
+### Set
+
+
+
+
+
+
+### Replace controller
 
 
 ## **Conclusion**
