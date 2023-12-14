@@ -223,9 +223,10 @@ The incoming address to the cache is divided into bits for Offset, Index and Tag
 - Offset corresponds to the bits used to determine the byte to be accessed from the cache line. Because the cache lines are 4 bytes long, there are 2 offset bits.
 - Index corresponds to bits used to determine the set of the Cache. There are 8 sets in the cache, and because 2^3 = 8, there are 3 index bits.
 - Tag corresponds to the remaining bits. This means there are 32 – (3+2) = 27 bits, which are stored in tag field to match the address on cache request.
-| Parameters     | Corresponding address bit                                      |                                                                     
+| Parameters     | Corresponding address bit                          |                                                                     
 | ------------- | ----------------------------------------------------|
-| offset        |   memory_address[1:0]                               |      | index         |   memory_address[4:2]                               |
+| offset        |   memory_address[1:0]                               |
+| index         |   memory_address[4:2]                               |
 | tag           |   memory_address[31:5]                              |                          
 
 
