@@ -202,29 +202,35 @@ After running the shell script pc.vcd file was generated and displayed in GTKwav
 
 ## Data Cache
 
-For adding cache memory of RISCV processor, I was in charge of the 32 bits 256 bytes cache memory.The cache implementation uses 4-way associative mapping: a total of 4 sets, each containing 4 lines, each line holding 4 words (word = 4 Bytes).The LRU (Least Recently Used) replacement policy is used and the Write Back method is used when writing to memory.
+For adding cache memory of RISCV processor, I was in charge of adding direct mapping cache and two-way set associative cache for a 4GB main memory which is organized as 4-byte blocks, and a direct-mapped cache/two-way set associative cache of 32 bytes with a block size of 4 bytes.
+- For the direct mapped cache implementation used :
+  - A total of 8 sets
+  - Single cache line per set
+  - The LRU (Least Recently Used) replacement policy is used 
+  - The Write through method is used
+  - Forms 8 entry x 60 bits RAM
+- For the two-way set associative cache implementation used :
+  - A total of 4 sets
+  - 
 
-**Parameter**
-
-In this project I used:
-TAG_WIDTH:the number of bits for the tag,here I used t=26
-SET_WIDTH:the number of bits for set index,I choosed 4 sets so the index s=2
-OFFSET_WIDTH:the number of bits for block offset,I used b=4
-SET_SIZE:the number of lines used in a set I used n=4
-
-The address width is 32 bits so t+b+S=32
-
-### Cache
+### Direct-mapped Cache
 
 The Cache is responsible for recieving inputs from the address and data from the CPU, and sending the corresponding control signal to the Cache Controller to obtain the corresponding control signal, so as to control the read and write instruction in cache.Finally return the Set output to the CPU.
 
 **Parameter**
+Here I used:
+TAG_WIDTH:the number of bits for the tag,here I used t=26
+SET_WIDTH:the number of bits for set index,I choosed 4 sets so the index s=2
+OFFSET_WIDTH:the number of bits for block offset,I used b=4
+SET_SIZE:the number of lines used in a set I used n=4
 | Parameters     | Meaning                                            |                                                                     
 | ------------- | ----------------------------------------------------|
 | SETS          |   Number of sets in the cache.                                                  |                                            
 | WAYS          |   Number of cache lines (ways) per set.                                                  |
 | WOORD_PER_LINE|   Number of words per cache line.                                                  |                          
 
+
+The address width is 32 bits so t+b+S=32
 
 
 
