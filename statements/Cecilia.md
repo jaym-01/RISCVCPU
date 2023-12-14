@@ -218,16 +218,15 @@ For adding cache memory of RISCV processor, I was in charge of adding direct map
 The Cache is responsible for recieving inputs from the address and data from the CPU, and sending the corresponding control signal to the Cache Controller to obtain the corresponding control signal, so as to control the read and write instruction in cache.Finally return the Set output to the CPU.
 
 **Parameter**
-Here I used:
-TAG_WIDTH:the number of bits for the tag,here I used t=26
-SET_WIDTH:the number of bits for set index,I choosed 4 sets so the index s=2
-OFFSET_WIDTH:the number of bits for block offset,I used b=4
-SET_SIZE:the number of lines used in a set I used n=4
+The incoming address to the cache is divided into bits for Offset, Index and Tag.
+- Offset corresponds to the bits used to determine the byte to be accessed from the cache line. Because the cache lines are 4 bytes long, there are 2 offset bits.
+- Index corresponds to bits used to determine the set of the Cache. There are 8 sets in the cache, and because 2^3 = 8, there are 3 index bits.
+- Tag corresponds to the remaining bits. This means there are 32 – (3+2) = 27 bits, which are stored in tag field to match the address on cache request.
 | Parameters     | Meaning                                            |                                                                     
 | ------------- | ----------------------------------------------------|
-| SETS          |   Number of sets in the cache.                                                  |                                            
-| WAYS          |   Number of cache lines (ways) per set.                                                  |
-| WOORD_PER_LINE|   Number of words per cache line.                                                  |                          
+| offset        |   memory_address[1:0]                                               |                                            
+| index         |   memory_address[4:2]                                                  |
+| tag           |   memory_address[31:5]                                               |                          
 
 
 The address width is 32 bits so t+b+S=32
