@@ -33,16 +33,15 @@ Also,as for personal work at beginning, testing program seems is not mandatory. 
 ### Program Counter
 
 Signals:
-- pc_src:
- - to select three different pc instructions:
+- pc_src:to select three different pc instructions:
   - Regular case
   * Branch
   + Jump
 - clock and reset:
- - Asynchronous reset
+  - Asynchronous reset
 - Output:
- - PC(external)
- * pc_next(internal)
+  - PC(external)
+  * pc_next(internal)
 
 Outputs from ALU&control unit goes to PC inputs:
 
@@ -52,9 +51,9 @@ This determine pc_next(the internal logic that will tranmitt to output logic PC)
 
 | Case      | PCSrc | Meaning                                                                          |
 | --------- | ----- | -------------------------------------------------------------------------------- |
-| PC + 4    | 2‘b00 | This is the regular case +4 because of byte addressing                                                          |
-| PC + Imm  | 2‘b01 | This is when the branch condition is true (Zero == 1) OR when there is a JAL ins |
-| Rd1 + Imm | 2’b10 | When there is a JALR (RET) ins                                                   |
+| PC + 4    | 2‘b00 | For register(regular) instruction +4 because of byte addressing                                                          |
+| PC + Imm  | 2‘b01 | For branch instruction OR JAL instruction|
+| Rd1 + Imm | 2’b10 | For jump instruction                                                  |
 
 ```verilog
 always_comb
