@@ -6,18 +6,18 @@ Throughout this project, I was tasked with implementing the following components
 
 **Single Cycle**
 
-- Control unit
-- Extend
-- Instruction memory
-- Data memory
+- [Control unit](#control-unit)
+- [Extend](#extend)
+- [Instruction memory](#instruction-memory)
+- [Data memory](#data-memory)
 
 **Pipeline**
 
-- Implementing the primary pipelined stages and additional components to support pipelined signals (e.g. D Flip Flops)
+- [Implementing the primary pipelined stages and additional components to support pipelined signals (e.g. D Flip Flops)](#pipeline)
 
 Additionally, for the single cycle processor, I planned and drew out the additional logic and changes on top of the original diagram, as shown below, for the single cycle processor, so that the entire group was synchronised and in agreement on how to implement the RISCV processor. This diagram is shown below:
 
-![Diagram of Single Cycle CPU](../images/jay_ins_correct.png)
+![Diagram of Single Cycle CPU](../images/SingleCycleDesign.png)
 
 ## Single Cycle
 
