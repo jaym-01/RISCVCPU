@@ -24,9 +24,9 @@
 
 Versions:
 
-- [Single Cycle]([https://github.com/johnyeocx/iac-project-team02/tree/main](https://github.com/johnyeocx/iac-project-team02/tree/main))
-- [Pipelined]([https://github.com/johnyeocx/iac-project-team02/tree/pipeline](https://github.com/johnyeocx/iac-project-team02/tree/pipeline))
-- [Pipelined Data Cache]([https://github.com/johnyeocx/iac-project-team02/tree/pipelined_data_cache](https://github.com/johnyeocx/iac-project-team02/tree/pipelined_data_cache))
+- [Single Cycle](https://github.com/johnyeocx/iac-project-team02/tree/main)
+- [Pipelined](https://github.com/johnyeocx/iac-project-team02/tree/pipeline)
+- [Pipelined Data Cache](https://github.com/johnyeocx/iac-project-team02/tree/pipelined_data_cache)
 
 ## Videos of working processor:
 
@@ -57,11 +57,11 @@ Overall, the tasks were split into the following categories:
 - **John:** Control unit, Extend & Memory
 - **Cecilia:** PC
 - **Liam:** ALU & Register File
-- **Jay:** Top**,** Testbench & Testing
+- **Jay:** Top, Testbench & Testing
 
 **Pipeline:** 
 
-- **John**: Pipeline stages ****
+- **John**: Pipeline stages
 - **Jay**: Hazard unit & testing
 
 **Data Cache:** Cecilia & Liam
