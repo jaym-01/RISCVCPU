@@ -427,8 +427,8 @@ module TwoWaySetAssociativeCache (
 ``` verilog
   // Cache parameters
   parameter int CACHE_SIZE = 32; // 32 bytes cache
-  parameter int BLOCK_SIZE = 4; // 4 bytes per block
-  parameter int SETS = 8; // Number of sets
+  parameter int BLOCK_SIZE = 8; // 8 bytes per block
+  parameter int SETS = 4; // Number of sets
   parameter int WAYS = 2; // Number of cache lines per set
 
   // Cache memory arrays
