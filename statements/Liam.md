@@ -30,7 +30,7 @@ end
 ```
 
 
-Because there are only three functions used here, we simplified the code to :
+Because there are only three functions used here, we simplified the code to :(the number for ALUctrl is only 1 and 2 and 
 
 **Code**
 ```verilog
