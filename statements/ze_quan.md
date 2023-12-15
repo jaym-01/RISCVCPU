@@ -400,11 +400,11 @@ This part wrote by me is not completed yet so finally we didn't choose this as f
 **Module TwoWaySetAssociativeCache**
 
 1. Input and Output
-   - `cpu_address`: 32-bit input representing the CPU address.
-   - `cpu_data_in`: 32-bit input representing data to be written into the cache.
-   - `cpu_write`: Input signal indicating whether a write operation should be performed.
-   - `cpu_read`: Input signal indicating whether a read operation should be performed.
-   - `cpu_data_out`: 32-bit output representing data read from the cache.
+   - cpu_address: 32-bit input representing the CPU address.
+   - cpu_data_in: 32-bit input representing data to be written into the cache.
+   - cpu_write: Input signal indicating whether a write operation should be performed.
+   - cpu_read: Input signal indicating whether a read operation should be performed.
+   - cpu_data_out: 32-bit output representing data read from the cache.
 
 ```systemverilog
 module TwoWaySetAssociativeCache (
