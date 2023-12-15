@@ -82,3 +82,66 @@ endmodule module regfile #(
 endmodule
 ```
 
+### single cycle cache
+This repository contains code for updating a RAM array based on certain conditions. The provided code snippet focuses on the scenario when a cache miss (`Hit == 1'b0`) occurs, and data needs to be fetched from the main memory.
+
+**Code Logic**
+
+The code snippet is designed to update a RAM array based on different conditions. Here is a brief explanation of the logic:
+
+1. **Address Fetching**:
+   - If there is a cache miss (`Hit == 1'b0`), the `DATA_Fetch_Addr_o` is set to `Address_in`.
+
+2. **Cache Line Check**:
+   - Check if the cache line corresponding to `Address_in[3:2]` is empty (`ram_array[Address_in[3:2]][60] == 1'b0`).
+
+3. **Cache Line Empty**:
+   - If the cache line is empty, update it with the fetched data and address information.
+   - Set the validity bit (`ram_array[Address_in[3:2]][60]`) to indicate the presence of valid data.
+
+4. **Cache Line Occupied (Condition 1)**:
+   - If the cache line is already occupied and marked as a certain type (`ram_array[Address_in[3:2]][122] == 1'b1`), update it with the fetched data and address information.
+   - The code snippet shows the update for a specific condition (`ram_array[Address_in[3:2]][92:61]`).
+
+5. **Cache Line Occupied (Condition 2)**:
+   - If the cache line is occupied but doesn't match the condition above, check further conditions.
+   - The code snippet showcases nested conditions and updates based on certain criteria.
+
+**Files**
+
+- `ram_array_update_logic.sv`: Contains the code snippet for updating the RAM array.
+
+**Usage**
+
+- Integrate this logic into your main system where RAM updates are required.
+- Customize the conditions and data handling based on your specific requirements.
+
+**code**
+``` verilog
+if (Hit == 1'b0)  begin
+    DATA_Fetch_Addr_o = Address_in
+
+    if (ram_array[Address_in[3:2]][60] ==1'b0) begin
+    ram_array[Address_in[3:2]][31:0] = Data_fetch_in;
+    ram_array[Address_in[3:2]][59:32] = Address_in;
+    ram_array[Address_in[3:2]][60] = 1'b1
+   end
+
+   else if (ram_array[Address_in[3:2]][122] == 1'b1) begin
+    ram_array[Address_in[3:2]][92:61] = Data_fetch_in;
+    ram_array[Address_in[3:2]][120:93] = Address_in[31:4];
+    ram_array[Address_in[3:2]][122] = 1'b1;
+   end
+         
+   else begin 
+   if(ram_array[Address_in[3:2]][121] == 1'b0) begin
+   ram_array[Address_in[3:2]][31:0] = Data_fetch_in;
+   ram_array[Address_in[3:2]][59:32] = Address_in[31:4];
+   end
+
+   if (ram_array[Address_in[3:2]][121] == 1'b1) begin
+   ram_array[Address_in[3:2]][92:61] = Data_fetch_in;
+   ram_array[Address_in[3:2]][120:93] = Address_in [31:4]
+   end
+ end
+```
