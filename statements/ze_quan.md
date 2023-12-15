@@ -15,11 +15,12 @@ After finishing and debuging the code for program counter I started simulation f
 
 **Data Cache**
 
-- I choose to design direct-mapped cache which contains:
+- Direct-mapped cache which contains:
   - Memory module
   - Cache module
   - Top-level file
   - Testbench
+- Two-way set associative cache which contains:
 
 ## Single Cycle
 
@@ -230,6 +231,7 @@ In a direct-mapped cache structure, the cache is organized into multiple sets wi
 
 1. Input and Output
    - address: 32-bit input representing the memory address.
+     - **Note**:Previous design our team choose address width to be 20 bits,here I use 32 bits for convenience(easier to map with example in lecture)the width problem already fixed by group member in the final version of file(data_cache.sv)
    - data_in: 32-bit input representing data to be written into memory.
    - write_enable: Input signal indicating whether a write operation should be performed.
    - data_out: 32-bit output representing data read from memory.
@@ -276,7 +278,7 @@ module Memory (
   end
 
   // Read data from main memory
-  assign data_out = memory[address/BLOCK_SIZE];
+  assign data_out = memory[address/BLOCK_SIZE];//no need of read_enable because always read
 
 ```
 
@@ -284,19 +286,19 @@ module Memory (
 
 1. Input and Output
 
-- memory_address: 32-bit input representing the CPU address.
-- memory_data_in: 32-bit input representing data to be written into the cache.
-- memory_write: Input signal indicating whether a write operation should be performed.
-- memory_read: Input signal indicating whether a read operation should be performed.
-- memory_data_out: 32-bit output representing data read from the cache.
+- cpu_address: 32-bit input representing the CPU address.
+- cpu_data_in: 32-bit input representing data to be written into the cache.
+- cpu_write: Input signal indicating whether a write operation should be performed.
+- cpu_read: Input signal indicating whether a read operation should be performed.
+- cpu_data_out: 32-bit output representing data read from the cache.
 
 ```verilog
 module DirectMappedCache (
-  input logic [31:0] memory_address,
-  input logic [31:0] memory_data_in,
-  input logic memory_write,
-  input logic memory_read,
-  output logic [31:0] memory_data_out
+  input logic [31:0] cpu_address,
+  input logic [31:0] cpu_data_in,
+  input logic cpu_write,
+  input logic cpu_read,
+  output logic [31:0] cpu_data_out
 );
 
 ```
@@ -313,7 +315,7 @@ module DirectMappedCache (
  // Cache parameters
  parameter int CACHE_SIZE = 32; // 32 bytes cache
  parameter int BLOCK_SIZE = 4; // 4 bytes per block
- parameter int SETS = CACHE_SIZE/BLOCK_SIZE; // Number of sets
+ parameter int SETS = 8; // Number of sets
 
  // define arrays
  logic [31:0] cache_memory [0: SETS-1];
@@ -328,9 +330,9 @@ module DirectMappedCache (
 
 | Siganl | Corresponding address bit |
 | ------ | ------------------------- |
-| offset | memory_address[1:0]       |
-| index  | memory_address[4:2]       |
-| tag    | memory_address[31:5]      |
+| offset | cpu_address[1:0]       |
+| index  | cpu_address[4:2]       |
+| tag    | cpu_address[31:5]      |
 
 ```verilog
   // Cache control signals
@@ -340,9 +342,9 @@ module DirectMappedCache (
   logic hit;
   // Extract index and tag from memory address
   always_comb begin
-    offset = memory_adress[1:0];
-    index = memory_address[4:2];
-    tag = memory_address[31:5];
+    offset = cpu_adress[1:0];
+    index = cpu_address[4:2];
+    tag = cpu_address[31:5];
   end
 ```
 
@@ -356,15 +358,15 @@ For direct mapped cache,the tag bits derived from the memory block address are c
     hit = valid[index] && (tag == cache_memory[index][31:5]);
   end
  // Cache read and write operations
-  always_ff @(posedge memory_read or posedge memory_write) begin
+  always_ff @(posedge cpu_read or posedge cpu_write) begin
     if (cpu_read || cpu_write) begin
       hit = 0;
       if (valid[index] && (tag == cache_memory[index][31:5])) begin
         hit = 1;
-        memory_data_out = cache_memory[index];
+        cpu_data_out = cache_memory[index];
       end
-      if (memory_write) begin
-        cache_memory[index] = memory_data_in;
+      if (cpu_write) begin
+        cache_memory[index] = cpu_data_in;
         valid[index] = 1;
       end
     end
@@ -377,43 +379,41 @@ For direct mapped cache,the tag bits derived from the memory block address are c
 module Top_cache;
 
   // Inputs and outputs
-  logic [31:0] memory_address;
-  logic [31:0] memory_data_in;
-  logic memory_write;
-  logic memory_read;
-  logic [31:0] memory_data_out;
+  logic [31:0] cpu_address;
+  logic [31:0] cpu_data_in;
+  logic cpu_write;
+  logic cpu_read;
+  logic [31:0] cpu_data_out;
 
-  // Instantiate
   Memory mem (
-    .address(memory_address),
-    .data_in(memory_data_in),
-    .write_enable(memory_write),
-    .data_out(memory_data_out)
+    .address(cpu_address),
+    .data_in(cpu_data_in),
+    .write_enable(cpu_write),
+    .data_out(cpu_data_out)
   );
 
-  // Instantiate
   DirectMappedCache cache (
-    .memory_address(memory_address),
-    .memory_data_in(memory_data_in),
-    .memory_write(memory_write),
-    .memory_read(memory_read),
-    .memory_data_out(memory_data_out)
+    .cpu_address(cpu_address),
+    .cpu_data_in(cpu_data_in),
+    .cpu_write(cpu_write),
+    .cpu_read(cpu_read),
+    .cpu_data_out(cpu_data_out),
   );
 
-  // Test inputs
+    //try different combinations of inputs for write operation
   initial begin
     // Write data to memory at address 0x100
-    memory_address = 32'h100;
-    memory_data_in = 32'hABCDEFFF;
-    memory_write = 1;
-    memory_read = 0;
+    cpu_address = 32'h100;
+    cpu_data_in = 32'hABCDEFFF;
+    cpu_write = 1;
+    cpu_read = 0;
     #10;
 
-    // Read data from memory at address 0x100
-    memory_address = 32'h100;
-    memory_data_in = 32'h0;
-    memory_write = 0;
-    memory_read = 1;
+    //try different combinations of inputs for read operation 
+    cpu_address = 32'h100;
+    cpu_data_in = 32'h0;
+    cpu_write = 0;
+    cpu_read = 1;
     #10;
 
     $finish;
@@ -433,17 +433,17 @@ int main(int argc, char** argv) {
     Verilated::commandArgs(argc, argv);
     VTop_cache* top = new VTop_cache;
 
-    top->memory_address = 0;
-    top->memory_data_in = 0;
-    top->memory_write = 0;
-    top-memory_read = 0;
+    top->cpu_address = 0;
+    top->cpu_data_in = 0;
+    top->cpu_write = 0;
+    top-cpu_read = 0;
 
     // Simulate for 1000 clock cycles
     for (int i = 0; i < 1000; ++i) {
-        top->memory_address = 0x100;  // try an address and verify
-        top->memory_data_in = 0xABCDEFFF;  // try an data and verify
-        top->memory_write = 1;
-        top->memory_read = 0;
+        top->cpu_address = 0x100;  // try an address and verify
+        top->cpu_data_in = 0xABCDEFFF;  // try an data and verify
+        top->cpu_write = 1;
+        top->cpu_read = 0;
 
         top->eval();
 
