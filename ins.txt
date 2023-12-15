@@ -1,9 +1,0 @@
-1. JAL
-2. JALR
-3. SB (Store Byte)
-4. LBU (Load unsigned byte)
-5. ADD 
-5. ADDI (Add immediate)
-7. LUI (Load upper immediate)
-8. BNE (Branch not equals)
-9. SUB
