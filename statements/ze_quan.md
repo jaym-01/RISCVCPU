@@ -20,7 +20,7 @@ After finishing and debuging the code for program counter I started simulation f
   - Cache module
   - Top-level file
   - Testbench
-- Two-way set associative cache which contains:
+- Two-way set associative cache
 
 ## Single Cycle
 
