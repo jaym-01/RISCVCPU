@@ -21,7 +21,6 @@ After finishing and debuging the code for program counter I started simulation f
 
 ## Single Cycle
 
-**Commits:** 
 
 The core of program counter is a MUX. I need to integrate all the different instructions into MUX and specify collected signals into different types of instruction implementations. In this part, I need to consider the components from other members' block and understand each logic.Finally I mapped the hardware logic into software logic and done the simulation.
 
@@ -72,7 +71,7 @@ always_ff @(posedge clk, posedge rst)
        if(rst) PC <= {ADDRESS_WIDTH{1'b0}};
        else PC <= pc_next;
 ```
-![Block diagram of FF](https://i.postimg.cc/900WL5SJ/IMG-1712.jpg)
+![Block diagram of FF](https://i.postimg.cc/SQ8HcbBB/IMG-1730.jpg)
 
 
 **Mistakes made in this part:**
@@ -202,18 +201,18 @@ After running the shell script pc.vcd file was generated and displayed in GTKwav
 
 ## Data Cache
 
-For adding cache memory of RISCV processor, I was in charge of adding direct mapping cache and two-way set associative cache for a 4GB main memory which is organized as 4-byte blocks, and a direct-mapped cache/two-way set associative cache of 32 bytes with a block size of 4 bytes.
+For adding cache memory of RISCV processor, I was in charge of adding direct mapping cache and two-way set associative cache(without replacement and write policy) for a 4GB main memory which is organized as 4-byte blocks, and a direct-mapped cache/two-way set associative cache of 32 bytes with a block size of 4 bytes.
 - For the direct mapped cache implementation used :
   - A total of 8 sets
   - Single cache line per set
-  - The LRU (Least Recently Used) replacement policy is used 
-  - The Write through method is used
+  - The LRU (Least Recently Used) replacement policy will be used (if have more time)
+  - The Write through method will be used(if have more time)
   - Forms 8 entry x 60 bits RAM(without adding U bit)
 - For the two-way set associative cache implementation used :
   - A total of 4 sets
   - Two cache line per set
-  - The LRU (Least Recently Used) replacement policy is used 
-  - The Write through method is used
+  - The LRU (Least Recently Used) replacement policy will be used (if have more time)
+  - The Write through method will be used(if have more time)
   - Forms 4 entry x 122 bits RAM(without adding U bit)
 
 ### Direct-mapped Cache
