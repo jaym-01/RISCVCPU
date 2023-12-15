@@ -36,7 +36,7 @@ int main(int argc, char **argv, char **env)
     // don't cares have been represented as -1 on the outputs and 0 on the inputs
     std::vector<std::vector<int>> test = {
         {111, 0, 0, 0, 3, 1, -1, -1, 0, -1, 1, 2},
-        {103, 0, 0, 0, 3, 2, 0, 1, 0, -1, 1, 2},
+        {103, 0, 0, 0, 0, 2, 0, 1, 0, -1, 1, 2},
         {35, 0, 0, 0, 2, 0, 0, 1, 1, 0, 0, -1},
         {3, 4, 0, 0, 0, 0, 0, 1, 0, 4, 1, 1},
         {51, 0, 0, 0, -1, 0, 0, 0, 0, -1, 1, 0},

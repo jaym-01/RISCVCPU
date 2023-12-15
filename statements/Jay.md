@@ -272,7 +272,7 @@ The ALU used in the single cycle has been copied over from the single cycle, hen
 | INS | OP | funct3 | funct7 | ImmSrc | PCSrc | ALUControl | ALUSrc | MemWrite | MemSrc | RegWrite | RegWSrc | Branch |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | JAL | 1101111 | x | x | 11 | 01 | x | x | 0 | x | 1 | 10 | 0 |
-| JALR | 1100111 | 000 | x | 11 | 10 | 000 | 1 | 0 | x | 1 | 10 | 0 |
+| JALR | 1100111 | 000 | x | 0 | 10 | 000 | 1 | 0 | x | 1 | 10 | 0 |
 | SB (Store Byte) | 0100011 | 000 | x | 10 | 00 | 000 | 1 | 1 | 00 | 0 | x | 0 |
 | LBU (Load unsigned byte) | 0000011 | 100 | x | 00 | 00 | 000 | 1 | 0 | 00 | 1 | 01 | 0 |
 | ADD | 0110011 | 000 | 0000000 | x | 00 | 000 | 0 | 0 | x | 1 | 00 | 0 |

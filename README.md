@@ -2,8 +2,6 @@
 
 # **Team 02: IAC RISC-V Project**
 
-## Table of Contents
-
 ## Quick Start
 
 - Ensure the device dev path in vbuddy.cfg file is configured correctly.
@@ -14,11 +12,11 @@
 
 | Command                      | Function                                             |
 | ---------------------------- | ---------------------------------------------------- |
-| source ./run_f1.sh           | run the f1 program                                   |
-| source ./run_pdf.sh          | run the reference program with the gaussian data set |
-| source ./run_pdf.sh sine     | run the reference with the sine data set             |
-| source ./run_pdf.sh triangle | run the reference with the triangle data set         |
-| source ./run_pdf.sh noisy    | run the reference with the noisy data set            |
+| ```source ./run_f1.sh```           | run the f1 program                                   |
+| ```source ./run_pdf.sh```          | run the reference program with the gaussian data set |
+| ```source ./run_pdf.sh sine```     | run the reference with the sine data set             |
+| ```source ./run_pdf.sh triangle``` | run the reference with the triangle data set         |
+| ```source ./run_pdf.sh noisy```    | run the reference with the noisy data set            |
 
 ## Overview
 
@@ -47,6 +45,8 @@ Versions:
 [Personal Statement: Jay](./statements/Jay.md)
 
 [Personal Statement: Ze Quan](./statements/ze_quan.md)
+
+[Personal Statement: Yingkai Xu](./statements/Liam.md)
 
 ## Contribution Table
 
