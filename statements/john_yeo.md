@@ -331,12 +331,11 @@ logic [TAG_WIDTH + B_WIDTH:0] way_0_cache [3:0];
 logic [TAG_WIDTH + B_WIDTH + 1:0] way_1_cache [3:0];
 ```
 
-However, I realised that while this implementation allowed the f1 & reference program to work, it wasn’t very robust because word & half word store & read operations would completely fail.
+However, I realised that while this implementation allowed the f1 & reference program to work, it wasn’t very robust because word & half word store & read operations would completely fail. To fix this, we took a different approach, which can be found [here](https://github.com/johnyeocx/iac-project-team02/blob/main/statements/Jay.md#modifying-the-cache-to-store-words-with-john).
 
 ### Adding the data cache module to top
 
 To integrate the updated data cache module with top, all that was needed was to add a mux in top to determine whether data should be read from the data cache depending on whether there was a read hit:
-```
 
 **riscv_top.sv**
 
