@@ -145,12 +145,14 @@ endmodule module regfile #(
 endmodule
 ```
 
-### single cycle cache
-This repository contains code for updating a RAM array based on certain conditions. The provided code snippet focuses on the scenario when a cache miss (`Hit == 1'b0`) occurs, and data needs to be fetched from the main memory.
+### two way set associative cache
+I wrote the entire first draft and Jay and John wrote the write part and add to top. This repository contains code for updating a RAM array based on certain conditions. The provided code snippet focuses on the scenario when a cache miss (`Hit == 1'b0`) occurs, and data needs to be fetched from the main memory.The 2-way set-associative cache demonstrated a significant reduction in cache conflicts compared to a 1-way set-associative cache. This was particularly evident in scenarios with high memory contention.
+Implementing a two-way set-associative cache involves creating modules and data structures to represent the cache and its operations
 
 **Code Logic**
 
-The code snippet is designed to update a RAM array based on different conditions. Here is a brief explanation of the logic:
+The code snippet is designed to update a RAM array based on different conditions. Here is a brief explanation of the logic:![IMG_0581](https://github.com/johnyeocx/iac-project-team02/assets/151572498/6cceae09-3156-4596-aadd-3aacd1cf30e3)
+
 
 1. **Address Fetching**:
    - If there is a cache miss (`Hit == 1'b0`), the `DATA_Fetch_Addr_o` is set to `Address_in`.
@@ -169,6 +171,8 @@ The code snippet is designed to update a RAM array based on different conditions
 5. **Cache Line Occupied (Condition 2)**:
    - If the cache line is occupied but doesn't match the condition above, check further conditions.
    - The code snippet showcases nested conditions and updates based on certain criteria.
+  
+when both 
 
 **Files**
 
@@ -178,6 +182,10 @@ The code snippet is designed to update a RAM array based on different conditions
 
 - Integrate this logic into your main system where RAM updates are required.
 - Customize the conditions and data handling based on your specific requirements.
+
+- Initially I wrote the entire first  code based on this arrangement.
+- Each line has 123 bits(64 (32+32）bits for data in way 0 and way 1, 56(28+28) bits for tags 0 and 1, and 3 bits for v0, v1 and u)(yes !I use the least recently used method)
+![IMG_0580](https://github.com/johnyeocx/iac-project-team02/assets/151572498/277612c4-acd0-4def-987c-b6f47adbfe48)
 
 **code**
 ``` verilog
@@ -212,12 +220,3 @@ code].
 
 ## Conclusion and Reflection
 
-This project provided a solution for efficiently updating a RAM array in the context of cache misses. The logic is designed to handle various scenarios, ensuring accurate and timely data retrieval.
-
-### Reflection
-
-- **Challenges**: cache part with handdling dirty bits
-  
-- **Learning**: how to coorporate in a team
-
-- **Improvements**: adding piplining by myself and LRU replacement policy and write-back policy.
