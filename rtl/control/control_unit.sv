@@ -37,13 +37,14 @@ module control_unit #(
         ALUControl = (op == 7'b0110111) ? 3'b010 : (funct7 == 7'b0100000 ? 3'b001 : 3'b000); // if LUI, then 010, else (if sub, then 001, else add (000))
 
         // 5. ALUSrc: 1 for Imm, 0 for rs2
-        ALUSrc = (op == 7'b0000011 || op == 7'b0100011 || op == 7'b0010011 || op == 7'b0110111) ? 1 : 0; // LBU, SB, ADDI, LUI: 1 else 0
+        ALUSrc = (op == 7'b0000011 || op == 7'b0100011 || op == 7'b0010011 || op == 7'b0110111 || op == 7'b01100111) ? 1 : 0; // LBU, SB, ADDI, LUI: 1 else 0
         
         // 6. ImmSrc 3 bits
         case(op)
             7'b1100011: ImmSrc = 1; // B Type Ins
             7'b0100011: ImmSrc = 2; // S Type Ins
-            7'b1101111: ImmSrc = 3; // J Type Ins
+            7'b1101111: ImmSrc = 3; // JAL Type Ins
+            7'b1100111: ImmSrc = 3; // JALR Type Ins
             7'b0110111: ImmSrc = 4; // LUI Ins
             default: ImmSrc = 0; // Default
         endcase
