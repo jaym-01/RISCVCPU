@@ -218,6 +218,8 @@ if (Hit == 1'b0)  begin
 ```
 code].
 
+After that, Jay and John change one array to two arrays to make it work better.
+
 ## Conclusion and Reflection
 Designing regfile and ALU helps me understanding parts of CPU and cooperating with my teammates helps me understanding that individual work needs to be adjusted to work together.
 While this project successfully demonstrated the advantages of a 2-way set-associative cache, there are avenues for further exploration. Future research could delve into making of CPU and related components, addressing specific challenges or optimizing the cache design for certain application scenarios.
