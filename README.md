@@ -30,15 +30,15 @@ Versions:
 
 ## Videos of working processor:
 
-[**F1 Starting Light Sequence:**](https://www.youtube.com/watch?v=ZEgYNSm-2rE)
+[**F1 Starting Light Sequence**](https://www.youtube.com/watch?v=ZEgYNSm-2rE)
 
 [**Reference Program Gaussian Data Set**](https://www.youtube.com/watch?v=L19uE8GNIMg)
 
-[**Reference Program Sine Data Set:**](https://www.youtube.com/watch?v=gi-OaK2o7cQ)
+[**Reference Program Sine Data Set**](https://www.youtube.com/watch?v=gi-OaK2o7cQ)
 
-[**Reference Program Triangle Data Set:**](https://www.youtube.com/watch?v=-6ea5gQGjow)
+[**Reference Program Triangle Data Set**](https://www.youtube.com/watch?v=-6ea5gQGjow)
 
-[**Reference Program Noisy Data Set:**](https://www.youtube.com/watch?v=wLEnNPWv9hE)
+[**Reference Program Noisy Data Set**](https://www.youtube.com/watch?v=wLEnNPWv9hE)
 
 ## Individual Statements
 
