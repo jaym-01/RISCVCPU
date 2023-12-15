@@ -40,7 +40,7 @@ Versions:
 
 [**Reference Program Noisy Data Set:**](https://www.youtube.com/watch?v=wLEnNPWv9hE)
 
-### Individual Statements
+## Individual Statements
 
 [Personal Statement: John](./statements/john_yeo.md)
 
