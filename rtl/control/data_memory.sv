@@ -14,7 +14,7 @@ module data_memory #(
     assign addr = A[A_WIDTH-1:0];
 
     // only for the pdf
-    initial $readmemh("test/noisy.mem", data_mem_arr, 'h10000);
+
 
     // load 
     logic sign_bit;

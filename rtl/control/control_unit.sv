@@ -41,12 +41,11 @@ module control_unit #(
         
         // 6. ImmSrc 3 bits
         case(op)
-            7'b1100011: ImmSrc = 1; // B Type Ins
-            7'b0100011: ImmSrc = 2; // S Type Ins
-            7'b1101111: ImmSrc = 3; // JAL Type Ins
-            7'b1100111: ImmSrc = 3; // JALR Type Ins
-            7'b0110111: ImmSrc = 4; // LUI Ins
-            default: ImmSrc = 0; // Default
+            7'b1100011: ImmSrc = 3'd1; // B Type Ins
+            7'b0100011: ImmSrc = 3'd2; // S Type Ins
+            7'b1101111: ImmSrc = 3'd3; // JAL Type Ins
+            7'b0110111: ImmSrc = 3'd4; // LUI Ins
+            default: ImmSrc = 3'd0; // Default
         endcase
 
 
