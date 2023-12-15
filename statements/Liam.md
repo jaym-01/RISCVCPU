@@ -9,6 +9,25 @@ This repository contains SystemVerilog code for two modules: ALU (Arithmetic Log
 
 The ALU module performs arithmetic and logical operations based on the control signals provided. It supports operations such as addition, subtraction, direct passing of one of the operands, and , or and SLT. However, we finally choose 3 of them because only three of them are used in the project. The module also features an output indicating whether the result is zero. Also, I created the testbench for ALU model. The inputs are SrcA, SrcB and ALU.Controlcode and the output is SUM. 
 
+This is the waveform I created for five functions initially.
+
+![PHOTO-2023-11-30-09-24-03](https://github.com/johnyeocx/iac-project-team02/assets/151572498/509fd50c-572f-4ef8-a0a5-6739d284fa72)
+
+The code I wrote is :
+**Code**
+always_comb begin
+    case (ALUctrl)
+        3'b001: SUM = op1 - op2;
+        3'b000: SUM = op1 + op2;
+        3'b010: SUM = op1 & op2;
+        3'b011: SUM = op1 | op2;
+        3'b101: if(op1<op2) SUM = {[DATA_WIDTH-1]{1‘b0}+{1‘b1}};
+                else SUM = {[DATA_WIDTH]{1'b0}};
+        default: SUM = op1 + op2;
+    endcase
+end
+
+<img width="1138" alt="截屏2023-12-15 20 10 52" src="https://github.com/johnyeocx/iac-project-team02/assets/151572498/ccb4246c-e71a-40d0-a3a6-8c63b9edfd53">
 
 
 
