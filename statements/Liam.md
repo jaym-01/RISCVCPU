@@ -149,6 +149,84 @@ endmodule
 I wrote the entire first draft and Jay and John wrote the write part and add to top based on this draft. This repository contains code for updating a RAM array based on certain conditions. The provided code snippet focuses on the scenario when a cache miss (`Hit == 1'b0`) occurs, and data needs to be fetched from the main memory.The 2-way set-associative cache demonstrated a significant reduction in cache conflicts compared to a 1-way set-associative cache. This was particularly evident in scenarios with high memory contention.
 Implementing a two-way set-associative cache involves creating modules and data structures to represent the cache and its operations
 
+```verilog
+module Yingkai (
+    input logic [31:0] Address_in,
+    input logic [31:0] Data_fetch_in,
+    input logic [31:0] ALUresult_in,
+    input logic        Write_enable_in,
+
+    output logic [31:0] Cache_to_memory_data_write_o,
+    output logic [31:0] DATA_Fetch_Addr_o,
+    output logic [31:0] Cache_data_out_o,
+);
+
+logic [31:0] read_data
+logic        Hit0;
+logic        Hit1;
+logic        Hit;
+logic [122:0] ram_array [3:0];
+
+assign Hit = Hit1 | Hit0;
+initial begin 
+    ram_array[0] = 123'b0;
+    ram_array[1] = 123'b0;
+    ram_array[2] = 123'b0;
+    ram_array[3] = 123'b0;
+end
+
+always_comb begin
+    //hit0
+    if (Address_in[31:4] == ram_array[Address_in[3:2]][59:32] && ram_array[Address_in[3:2]][60]==1'b1)
+       Hit0 = 1'b1;
+    else 
+       Hit0 = 1'b0;
+    //Hit1
+    if (Address_in[31:4] == ram_array[Address_in[3:2][120:93]] && ram_array[Address_in[3:2]][122]==1'b1)
+       Hit1 = 1'b1;
+    else 
+       Hit1 = 1'b0;
+
+    //u varies with stuff into way 0 and way 1
+
+    ram_array[Address_in[3:2][121]] = Hit0;
+
+    if (Hit == 1'b0)  begin
+        DATA_Fetch_Addr_o = Address_in
+
+        if (ram_array[Address_in[3:2]][60] ==1'b0) begin
+            ram_array[Address_in[3:2]][31:0] = Data_fetch_in;
+            ram_array[Address_in[3:2]][59:32] = Address_in;
+            ram_array[Address_in[3:2]][60] = 1'b1;
+        end
+
+        else if (ram_array[Address_in[3:2]][122] == 1‘b1) begin
+            ram_array[Address_in[3:2]][92:61] = Data_fetch_in;
+            ram_array[Address_in[3:2]][120:93] = Address_in[31:4];
+            ram_array[Address_in[3:2]][122] = 1'b1;
+        end
+         
+        else begin 
+            if(ram_array[Address_in[3:2]][121] == 1'b0) begin
+               ram_array[Address_in[3:2]][31:0] = Data_fetch_in;
+               ram_array[Address_in[3:2]][59:32] = Address_in[31:4];
+            end
+
+            if (ram_array[Address_in[3:2]][121] == 1'b1) begin
+                ram_array[Address_in[3:2]][92:61] = Data_fetch_in;
+                ram_array[Address_in[3:2]][120:93] = Address_in [31:4]
+            end
+        end
+        
+
+
+
+    
+    end
+end
+
+endmodule
+```
 **Code Logic**
 
 The code snippet is designed to update a RAM array based on different conditions. Here is a brief explanation of the logic:![IMG_0581](https://github.com/johnyeocx/iac-project-team02/assets/151572498/6cceae09-3156-4596-aadd-3aacd1cf30e3)
