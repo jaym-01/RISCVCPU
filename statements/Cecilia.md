@@ -274,11 +274,11 @@ module Memory (
 ```
 **Module Direct-mapped cache**
 1. Input and Output
-  - cpu_address: 32-bit input representing the CPU address.
-  - cpu_data_in: 32-bit input representing data to be written into the cache.
-  - cpu_write: Input signal indicating whether a write operation should be performed.
-  - cpu_read: Input signal indicating whether a read operation should be performed.
-  - cpu_data_out: 32-bit output representing data read from the cache.
+  - memory_address: 32-bit input representing the CPU address.
+  - memory_data_in: 32-bit input representing data to be written into the cache.
+  - memory_write: Input signal indicating whether a write operation should be performed.
+  - memory_read: Input signal indicating whether a read operation should be performed.
+  - memory_data_out: 32-bit output representing data read from the cache.
 
 ``` verilog
 module DirectMappedCache (
