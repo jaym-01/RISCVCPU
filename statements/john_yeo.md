@@ -306,55 +306,82 @@ For this section, me and Jay were tasked with integrating the data cache module 
 
 ### Editting the data cache module
 
-Ze Quan & Ying Kai initially built a 2 way set associative cache [Commit 7c976e3](https://github.com/johnyeocx/iac-project-team02/commit/7c976e32e3631f4049a3119e7ff486b991fe55d2), each with. In order to make it work with top, I made the following changes:
+Ze Quan & Ying Kai initially built a 2 way set associative cache [Commit 7c976e3](https://github.com/johnyeocx/iac-project-team02/commit/7c976e32e3631f4049a3119e7ff486b991fe55d2). In order to make it work with top, I made the following changes:
+
+**Writing to cache**
+
+This was a section which I worked on for the data cache. For writing to the cache, I considered three possibilities:
+
+- Read operation and there was a hit: Update U bit in way 1 cache
+- Read operation and no hit: Update cache with new data and tag
+- Write operation: Update cache with new data (& tag if it’s new)
+
+This is done synchronously, similar to how data is written to data memory. On the rising edge of the next clock cycle, data will be written.
 
 **Data size**
 
-This was the most important change I made to the data cache. Initially, the cache contained data sizes of 32 bits, however, because the processor is byte addresable and in the data memory, data was being read and written in bytes, this made the data cache module unstable.
+Initially, when building the cache, I encountered problems with the 32 bit data size, because the LBU and SB instructions were writing & reading bytes, and my strategy was to simply replace the specific byte offset within the word stored in the cache. However, this made the tag invalid for the other bytes in the word, and therefore the program didn’t work.
 
-For instance, if some byte of data (byte offset 01 in Address) was written to the cache with tag A, if now there is a read operation for address with tag A, but byte offset 00, the data inside the cache may not be valid.
+**Change 1: Make data in cache byte sized**
 
-**Previously**
-
-```verilog
-logic [TAG_WIDTH + D_WIDTH:0] way_0_cache [3:0];
-logic [TAG_WIDTH + D_WIDTH + 1:0] way_1_cache [3:0];
-
-// Per byte replacement strategy example
-if (byte_offset == 2'b00)
-	way_0_cache[set][7:0] = WriteData[7:0];
-```
-
-**New**
+To fix this, the first thing I did was to simply make the data sizes in the cache byte sized, as can be seen in the following code:
 
 ```verilog
 logic [TAG_WIDTH + B_WIDTH:0] way_0_cache [3:0];
 logic [TAG_WIDTH + B_WIDTH + 1:0] way_1_cache [3:0];
 ```
 
-**Cache representation**
+However, I realised that while this implementation allowed the f1 & reference program to work, it wasn’t very robust because word & half word store & read operations would completely fail.
 
-For the initial cache representation made by Ze Quan & Ying Kai, there were 4 rows of 123 bits, with each row representing 2 ways, where each way contained 32 bits of data, 28 bits for the tag, and 1 or 2 extra bits for the U & V bit:
+**Change 2: Writing entire word to data cache (with Jay)**
+
+I realised that another fix was instead of replacing a certain byte within the word stored in the cache, was to fetch the entire word for address (aligned) from the data memory, and write that to the cache entirely every time there was a write operation. This ensured that the tag for each byte remained valid:
 
 ```verilog
-logic [122:0] ram_array [3:0];
+logic [D_WIDTH-1:0] new_word_from_mem;
+always_comb begin
+    case (byte_offset)
+        2'b00: new_word_from_mem = {WordFromMem[31:8], WriteData[7:0]};
+        2'b01: new_word_from_mem = {WordFromMem[31:16], WriteData[7:0], WordFromMem[7:0]};
+        2'b10: new_word_from_mem = {WordFromMem[31:24], WriteData[7:0], WordFromMem[15:0]};
+        2'b11: new_word_from_mem = {WriteData[7:0], WordFromMem[23:0]};
+    endcase
+end
+
+always_ff@(posedge clk) begin
+		... // some other code
+    if (WE) begin
+        if (Hit0) begin
+            way_0_cache[set] <= {1'b1, tag, new_word_from_mem};
+            way_1_cache[set][A_WIDTH + D_WIDTH] <= 1'b0; // set U bit to 0
+        end
+
+        else if (Hit1)
+            way_1_cache[set] <= {2'b11, tag, new_word_from_mem}; // write data to cache
+
+        else if (u_bit)
+            way_0_cache[set] <= {1'b1, tag, new_word_from_mem}; // write data to cache
+        else
+            way_1_cache[set] <= {2'b11, tag, new_word_from_mem}; // write data to cache
+    end
+end
 ```
 
-This felt a little bit inflexible, and also slightly difficult to work with, so instead I created 2 separate arrays, one for each way, and also used dynamic bit widths with parameters. (See code above)
-
-**Writing to cache**
-
-This was another section which I added to the data cache. For writing to the cache, I considered three possibilities:
-
-- Read operation and there was a hit: Update U bit in way 1 cache
-- Read operation and no hit: Update cache with new data and tag
-- Write operation: Update cache with new data (& tag if it’s a new)
-
-This is done synchronously, similar to how data is written to data memory. On the rising edge of the next clock cycle, data will be written.
+When testing this, the f1 & reference programs still worked.
 
 ### Adding the data cache module to top
 
-To integrate the updated data cache module with top, all that was needed was to connect the appropriate signals, and add a mux to determine whether data should be read from the data cache depending on whether there was a read hit:
+To integrate the updated data cache module with top, all that was needed was to create another signal (ReadWord) from the data_memory, and add a mux in top to determine whether data should be read from the data cache depending on whether there was a read hit:
+
+**data_memory.sv**
+
+```verilog
+logic [A_WIDTH-1:0] word_addr;
+assign word_addr = {A[A_WIDTH-1:2], 2'b0};
+assign ReadWord = {data_mem_arr[word_addr + 3], data_mem_arr[word_addr + 2], data_mem_arr[word_addr + 1], data_mem_arr[word_addr]};
+```
+
+**riscv_top.sv**
 
 ```verilog
 assign ReadData_m = hit ? data_from_cache : data_from_memory;
