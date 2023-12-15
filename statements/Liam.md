@@ -2,12 +2,14 @@
 
 ## Overview
 
-This repository contains SystemVerilog code for two modules: ALU (Arithmetic Logic Unit), Register File and data cache. These modules can be integrated into a larger system for various digital processing applications.<img width="1138" alt="截屏2023-12-15 20 10 52" src="https://github.com/johnyeocx/iac-project-team02/assets/151572498/f0b1c6f4-697b-446c-bbf0-a8951b793ff8">
+This repository contains SystemVerilog code for two modules: ALU (Arithmetic Logic Unit), Register File and data cache. These modules can be integrated into a larger system for various digital processing applications.
 
 
 ### ALU Module
 
-The ALU module performs arithmetic and logical operations based on the control signals provided. It supports operations such as addition, subtraction, direct passing of one of the operands, and , or and SLT. However, we finally choose 3 of them because only three of them are used in the project. The module also features an output indicating whether the result is zero.
+The ALU module performs arithmetic and logical operations based on the control signals provided. It supports operations such as addition, subtraction, direct passing of one of the operands, and , or and SLT. However, we finally choose 3 of them because only three of them are used in the project. The module also features an output indicating whether the result is zero. Also, I created the testbench for ALU model. The inputs are SrcA, SrcB and ALU.Controlcode and the output is SUM. 
+
+
 
 
 
