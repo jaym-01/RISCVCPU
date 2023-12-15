@@ -146,7 +146,7 @@ endmodule
 ```
 
 ### two way set associative cache
-I wrote the entire first draft and Jay and John wrote the write part and add to top. This repository contains code for updating a RAM array based on certain conditions. The provided code snippet focuses on the scenario when a cache miss (`Hit == 1'b0`) occurs, and data needs to be fetched from the main memory.The 2-way set-associative cache demonstrated a significant reduction in cache conflicts compared to a 1-way set-associative cache. This was particularly evident in scenarios with high memory contention.
+I wrote the entire first draft and Jay and John wrote the write part and add to top based on this draft. This repository contains code for updating a RAM array based on certain conditions. The provided code snippet focuses on the scenario when a cache miss (`Hit == 1'b0`) occurs, and data needs to be fetched from the main memory.The 2-way set-associative cache demonstrated a significant reduction in cache conflicts compared to a 1-way set-associative cache. This was particularly evident in scenarios with high memory contention.
 Implementing a two-way set-associative cache involves creating modules and data structures to represent the cache and its operations
 
 **Code Logic**
@@ -219,4 +219,7 @@ if (Hit == 1'b0)  begin
 code].
 
 ## Conclusion and Reflection
+Designing regfile and ALU helps me understanding parts of CPU and cooperating with my teammates helps me understanding that individual work needs to be adjusted to work together.
+While this project successfully demonstrated the advantages of a 2-way set-associative cache, there are avenues for further exploration. Future research could delve into making of CPU and related components, addressing specific challenges or optimizing the cache design for certain application scenarios.
+
 
