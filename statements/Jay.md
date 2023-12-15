@@ -315,9 +315,53 @@ The single cycle processor, displays the value 0x2 for 6 clock cycle:
 
 From waveforms above, it is clear that the first instruction after branching only writes to a register after the final instruction is flushed, which results in extra clock cycles, moving the flushed instructions through the different stages of the processor, whilst in parallel, running operations to execute the next instructions after the branch instruction. Hence, the stretching in the horizontal axis is to be expected for the pipelined implementation.
 
+
+## Modifying the cache to stores words
+
+This section refers to [commit a1f34ac](https://github.com/johnyeocx/iac-project-team02/commit/a1f34ac46c38f1cd3c6c01ca5888edae4dd1e9aa).
+
+To improve upon what Ze Quan, Ying Kai & John have implemented for the data cache, I expanded it to ensure that it stores whole words in the data memory, which will increase the number of hits. This would require getting a word out of the data memory each time, which I implemented by creating another output, using the code below.
+```sv
+logic [A_WIDTH - 1:0] word_addr = {A[A_WIDTH - 1:2], 2'b0};
+assign Word = {data_mem_arr[word_addr + 3], data_mem_arr[word_addr + 2], data_mem_arr[word_addr + 1], data_mem_arr[word_addr]};
+```
+
+Most changes within the actual data cache involed modifiying the width of signals.
+
+To output the correct byte in the format the CPU can use and since the only operation implemented is `LBU`, the cache must extract the byte being specified and append 0's to the rest of the word when output, the change made is shown below, for the way 0 cache, an equivilent statement was written for way 1 cache. `The byte_offset` is the the first 2 bits of the address and is used to find the byte from the word stored in cache. 
+```sv
+case(byte_offset)
+    2'b0: CacheReadData = {24'b0, way_0_cache[set][7:0]};
+    2'b1: CacheReadData = {24'b0, way_0_cache[set][15:8]};
+    2'b10: CacheReadData = {24'b0, way_0_cache[set][23:16]};
+    2'b11: CacheReadData = {24'b0, way_0_cache[set][31:24]};
+endcase
+``` 
+When the data memory is being written to, the cache takes the word already stored there and the byte being written and stores it correctly in the cache, using the code below, this has also been implemented with way 1 cache. This approach was taken to ensure it has the same behaviour as the cache that stores bytes.
+```sv
+case(byte_offset)
+    2'b0: way_0_cache[set] <= {1'b1, tag, DataFromMem[31:8], WriteData[7:0]};
+    2'b1: way_0_cache[set] <= {1'b1, tag, DataFromMem[31:16], WriteData[7:0], DataFromMem[7:0]};
+    2'b10: way_0_cache[set] <= {1'b1, tag, DataFromMem[31:24], WriteData[7:0], DataFromMem[15:0]};
+    2'b11: way_0_cache[set] <= {1'b1, tag, WriteData[7:0], DataFromMem[23:0]};
+endcase
+```
+
+I modified the top to connect the word output by the data memory with the `DataFromMem` input. After testing it with the pdf and F1, there were problems that appeared due to a change required in the the tag, as the byte offset is not being used, which is fixed in [commit 5f2935f](https://github.com/johnyeocx/iac-project-team02/commit/5f2935f55c3444f21200f26c85a4f2d428cf9c8b). However, after this, both the pdf and f1 program successfully ran, with hits being observed, as can be seen in the waveform below.
+
+
+The cache has been implemenented in such way that it does not provide any benefit in the verilator simulator or if the CPU was to be built with actual hardware. With more time this is how we would implement the cache:
+
+- Only use the cache memory in the memory stage.
+- The data memory should become it's own stage that is only used when there is a miss, it should have a stall effect where it waits an extra clock cycle to fetch the data memory. 
+- The greatest time taken by a process is fetching from the data and instruction memory, in this example I will ignore the instruction memory. 
+- The data memory, when required, will take multiple clock cycles to fetch data.
+- This means the maximum time required for each clock cycle can be required, enabling a higher clock rate to be used, hence the data cache will provide an increase in the performance.
+
+
 ## Conclusion
 
-This project has been really enjoyable and has helped me better understand the RISC V ISA, as we’ve been able to implement the CPU from scratch and make our own design decisions along the way based on how what we believe the best way to implement the ISA of the RISC V is.
+This project has been really enjoyable and has helped me better understand the RISC V ISA, as we’ve been able to implement the CPU from scratch and make our own design decisions along the way based on what we believe the best way to implement the ISA of the RISC V is.
 
 To improve on this project, testing the modules independently, using the method I used for the control unit when testing the pipelined CPU would have made it easier to spot and resolve bugs, as well as more thoroughly test components, to ensure they are more robust. This would also be important if we were implementing all the instructions, since some instructions are not used in the f1 and reference program, the only way to validate if they work is through the testing on the individual modules, creating test cases for for each instruction. 
 
