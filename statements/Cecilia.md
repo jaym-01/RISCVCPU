@@ -202,7 +202,7 @@ After running the shell script pc.vcd file was generated and displayed in GTKwav
 
 ## Data Cache
 
-For adding cache memory of RISCV processor, I was in charge of adding direct mapping cache and tried to do two-way set associative cache for a 4GB main memory which is organized as 4-byte blocks, and a direct-mapped cache/two-way set associative cache of 32 bytes with a block size of 4 bytes.
+For adding cache memory of RISCV processor, I was in charge of adding single-cycle direct mapping cache and tried to do two-way set associative cache for a 4GB main memory which is organized as 4-byte blocks, and a direct-mapped cache/two-way set associative cache of 32 bytes with a block size of 4 bytes.
 - For the direct mapped cache implementation used :
   - A total of 8 sets
   - Single cache line per set
@@ -460,8 +460,8 @@ int main(int argc, char** argv) {
 ```
 ### Two-way set associative cache
 
-A set-associative cache can be imagined as a n × m matrix. The cache is divided into ‘n’ sets and each set contains ‘m’ cache lines. A memory block is first mapped onto a set and then placed into any cache line of the set.
-not complete yet so finally we didn't choose this version, just leave it as practice.In this file I will attach all my thinking process and progress
+A set-associative cache can be imagined as a n × m matrix. The cache is divided into ‘n’ sets and each set contains ‘m’ cache lines.For two-way set associative cache m=2. A memory block is first mapped onto a set and then placed into any cache line of the set.
+This part not complete yet so finally we didn't choose this as final version, just leave it as practice.In this file I will attach all my thinking process and progress
 
 
 ## **Conclusion**
