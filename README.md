@@ -46,7 +46,7 @@ Versions:
 
 [Personal Statement: Jay](./statements/Jay.md)
 
-[Personal Statement: Cecilia](./statements/Cecilia.md)
+[Personal Statement: Ze Quan](./statements/ze_quan.md)
 
 ## Contribution Table
 
@@ -55,8 +55,8 @@ Overall, the tasks were split into the following categories:
 **Single Cycle**
 
 - **John:** Control unit, Extend & Memory
-- **Cecilia:** PC
-- **Liam:** ALU & Register File
+- **Ze Quan:** PC
+- **Ying Kai:** ALU & Register File
 - **Jay:** Top, Testbench & Testing
 
 **Pipeline:**
@@ -64,30 +64,33 @@ Overall, the tasks were split into the following categories:
 - **John**: Pipeline stages
 - **Jay**: Hazard unit & testing
 
-**Data Cache:** Cecilia & Liam
+**Data Cache:**
+
+- **Ze Quan & Ying Kai**: 2 way set associative cache
+- **John & Jay**: Top & testing
 
 However, throughout the project duration, we helped one another out with each component, and as such, the detailed contributions are shown in the following table:
 
-| Component           | File                              | John | Jay | Cecilia | Liam |
-| ------------------- | --------------------------------- | ---- | --- | ------- | ---- |
-| Single Cycle        | Branch: main                      |      |     |         |      |
-| ALU                 | alu/alu.sv                        |      |     |         | x    |
-| Register File       | alu/regfile.sv                    |      |     |         | x    |
-| Control Unit        | control/control_unit.sv           | x    |     |         |      |
-| Extend              | control/extend.sv                 | x    |     |         |      |
-| Data Mem            | control/data_memory.sv            | x    |     |         |      |
-| Instruction Mem     | control/instruction_memory.sv     | x    |     |         |      |
-| PC                  | pc/pc.sv                          |      |     | x       |      |
-| Top                 | riscv_top.sv                      |      | x   |         |      |
-| Testing             | f1_riscv_tb.cpp, pdf_riscv_tb.cpp |      | x   |         |      |
-| Shell Files         | run_f1.sh, run_pdf.sh             |      | x   |         |      |
-| Pipeline            | Branch: adding_pipeline           |      |     |         |      |
-| Pipeline stages     | pipelines/                        | x    | x   |         |      |
-| Pipeline top        | riscv_top.sv                      | x    | x   |         |      |
-| Hazard Unit         | hazard_unit/hazard_unit.sv        |      | x   |         |      |
-| Data cache          | Branch: pipelined_data_cache      |      |     |         |      |
-| Building data cache | data_cache/data_cache.sv          |      |     | x       | x    |
-| Data cache top      | riscv_top.sv                      | x    | x   |         |      |
+| Component           | File                              | John | Jay | Ze Quan | Ying Kai |
+| ------------------- | --------------------------------- | ---- | --- | ------- | -------- |
+| Single Cycle        | Branch: main                      |      |     |         |          |
+| ALU                 | alu/alu.sv                        |      |     |         | x        |
+| Register File       | alu/regfile.sv                    |      |     |         | x        |
+| Control Unit        | control/control_unit.sv           | x    |     |         |          |
+| Extend              | control/extend.sv                 | x    |     |         |          |
+| Data Mem            | control/data_memory.sv            | x    |     |         |          |
+| Instruction Mem     | control/instruction_memory.sv     | x    |     |         |          |
+| PC                  | pc/pc.sv                          |      |     | x       |          |
+| Top                 | riscv_top.sv                      |      | x   |         |          |
+| Testing             | f1_riscv_tb.cpp, pdf_riscv_tb.cpp |      | x   |         |          |
+| Shell Files         | run_f1.sh, run_pdf.sh             |      | x   |         |          |
+| Pipeline            | Branch: adding_pipeline           |      |     |         |          |
+| Pipeline stages     | pipelines/                        | x    | x   |         |          |
+| Pipeline top        | riscv_top.sv                      | x    | x   |         |          |
+| Hazard Unit         | hazard_unit/hazard_unit.sv        |      | x   |         |          |
+| Data cache          | Branch: pipelined_data_cache      |      |     |         |          |
+| Building data cache | data_cache/data_cache.sv          |      |     | x       | x        |
+| Data cache top      | riscv_top.sv                      | x    | x   |         |          |
 
 ## **Project Directory**
 
