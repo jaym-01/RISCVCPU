@@ -208,50 +208,274 @@ For adding cache memory of RISCV processor, I was in charge of adding direct map
   - Single cache line per set
   - The LRU (Least Recently Used) replacement policy is used 
   - The Write through method is used
-  - Forms 8 entry x 60 bits RAM
+  - Forms 8 entry x 60 bits RAM(without adding U bit)
 - For the two-way set associative cache implementation used :
   - A total of 4 sets
-  - 
+  - Two cache line per set
+  - The LRU (Least Recently Used) replacement policy is used 
+  - The Write through method is used
+  - Forms 4 entry x 122 bits RAM(without adding U bit)
 
 ### Direct-mapped Cache
 
-The Cache is responsible for recieving inputs from the address and data from the CPU, and sending the corresponding control signal to the Cache Controller to obtain the corresponding control signal, so as to control the read and write instruction in cache.Finally return the Set output to the CPU.
+In a direct-mapped cache structure, the cache is organized into multiple sets with a single cache line per set. Based on the address of the memory block, it can only occupy a single cache line. The cache can be framed as a n × 1 column array.
 
-**Parameter**
+**Module Memory**
 
-The incoming address to the cache is divided into bits for Offset, Index and Tag.
-- Offset corresponds to the bits used to determine the byte to be accessed from the cache line. Because the cache lines are 4 bytes long, there are 2 offset bits.
-- Index corresponds to bits used to determine the set of the Cache. There are 8 sets in the cache, and because 2^3 = 8, there are 3 index bits.
-- Tag corresponds to the remaining bits. This means there are 32 – (3+2) = 27 bits, which are stored in tag field to match the address on cache request.
+1. Input and Output
+   - address: 32-bit input representing the memory address.
+   - data_in: 32-bit input representing data to be written into memory.
+   - write_enable: Input signal indicating whether a write operation should be performed.
+   - data_out: 32-bit output representing data read from memory.
 
-| Parameters     | Corresponding address bit                          |                                                                     
+``` verilog
+module Memory (
+  input logic [31:0] address,
+  input logic [31:0] data_in,
+  input logic write_enable,
+  output logic [31:0] data_out
+);
+
+```
+
+2. Main memory parameters&main memory
+   - MEM_SIZE: Parameter specifying the size of the main memory (4GB in this case).
+   - BLOCK_SIZE: Parameter specifying the size of each memory block (4 bytes).
+   - MEM_ADDR_BITS: Parameter indicating the number of bits required to address the memory (32 bits).
+   - memory: A memory array storing 32-bit data elements, with the array size calculated based on MEM_SIZE and BLOCK_SIZE.
+
+``` verilog
+  // Main memory parameters
+  parameter int MEM_SIZE = 32'h100000000; // 4GB
+  parameter int BLOCK_SIZE = 4; // 4 bytes per block
+  parameter int MEM_ADDR_BITS = 32; // 32-bit address
+
+  // Main memory array
+  logic [31:0] memory [0: (MEM_SIZE/BLOCK_SIZE)-1];
+
+```
+
+3. Read and Write operation
+   - always_ff: A procedural block sensitive to the positive edge of write_enable.
+   - Inside the block, it checks if write_enable is active. If true, it writes data_in to the corresponding block in memory.
+   - assign data_out: An assignment statement continuously updates data_out with the content of the memory block addressed by address/BLOCK_SIZE.
+
+``` verilog
+  // Read and write operations
+  always_ff @(posedge write_enable) begin
+    if (write_enable) begin
+      // Write data to main memory
+      memory[address/BLOCK_SIZE] = data_in;
+    end
+  end
+
+  // Read data from main memory
+  assign data_out = memory[address/BLOCK_SIZE];
+
+```
+**Module Direct-mapped cache**
+1. Input and Output
+  - cpu_address: 32-bit input representing the CPU address.
+  - cpu_data_in: 32-bit input representing data to be written into the cache.
+  - cpu_write: Input signal indicating whether a write operation should be performed.
+  - cpu_read: Input signal indicating whether a read operation should be performed.
+  - cpu_data_out: 32-bit output representing data read from the cache.
+
+``` verilog
+module DirectMappedCache (
+  input logic [31:0] memory_address,
+  input logic [31:0] memory_data_in,
+  input logic memory_write,
+  input logic memory_read,
+  output logic [31:0] memory_data_out
+);
+
+```
+2.Cache parameters&cache memory
+  - CACHE_SIZE: Parameter specifying the size of the cache (32 bytes).
+  - BLOCK_SIZE: Parameter specifying the size of each cache block (4 bytes).
+  - SETS: Parameter calculating the number of sets in the cache.
+  - cache_memory: Cache memory array storing 32-bit data elements, with the array size determined by SETS.
+  -valid: Array of valid bits, one for each set in the cache.
+
+ ``` verilog
+  // Cache parameters
+  parameter int CACHE_SIZE = 32; // 32 bytes cache
+  parameter int BLOCK_SIZE = 4; // 4 bytes per block
+  parameter int SETS = CACHE_SIZE/BLOCK_SIZE; // Number of sets
+
+  // Cache memory
+  logic [31:0] cache_memory [0: SETS-1];
+  logic valid [0: SETS-1];
+```
+
+3.The incoming address to the cache is divided into bits for Offset, Index and Tag.
+  - Offset corresponds to the bits used to determine the byte to be accessed from the cache line. Because the cache lines are 4 bytes long, there are 2 offset bits.
+  - Index corresponds to bits used to determine the set of the Cache. There are 8 sets in the cache, and because 2^3 = 8, there are 3 index bits.
+  - Tag corresponds to the remaining bits. This means there are 32 – (3+2) = 27 bits, which are stored in tag field to match the address on cache request.
+
+| Siganl        | Corresponding address bit                           |                                                                     
 | ------------- | ----------------------------------------------------|
 | offset        |   memory_address[1:0]                               |
 | index         |   memory_address[4:2]                               |
 | tag           |   memory_address[31:5]                              |                          
-
+``` verilog
+  // Cache control signals
+  logic [2:0] index;
+  logic [26:0] tag;
+  logic hit;
+  // Extract index and tag from memory address
+  always_comb begin
+    offset = memory_adress[1:0];
+    index = cpu_address[4:2];
+    tag = cpu_address[31:5];
+  end
+```
 
 The address width is 32 bits so t+b+S=32
 
+4.Hit determination&read.write operations
+
+For direct mapped cache,the tag bits derived from the memory block address are compared with the tag bits associated with the set. If the tag matches, then there is a cache hit and the cache block is returned to the processor. Else there is a cache miss and the memory block is fetched from the lower memory 
+
+``` verilog
+ // Hit determination
+  always_comb begin
+    hit = valid[index] && (tag == cache_memory[index][31:5]);
+  end
+ // Cache read and write operations
+  always_ff @(posedge cpu_read or posedge cpu_write) begin
+    if (cpu_read || cpu_write) begin
+      hit = 0;
+      // Check the cache line for the requested data
+      if (valid[index] && (tag == cache_memory[index][31:5])) begin
+        hit = 1;
+        cpu_data_out = cache_memory[index];
+      end
+      // Perform write operation if cpu_write is 1
+      if (cpu_write) begin 
+        // Write data to the cache line
+        cache_memory[index] = cpu_data_in;
+        // Set the valid bit
+        valid[index] = 1;
+      end
+    end
+  end
+```
+
+**Top-level file**
+
+``` verilog
+module Top_cache;
+
+  // Inputs and outputs
+  logic [31:0] memory_address;
+  logic [31:0] memory_data_in;
+  logic memory_write;
+  logic memory_read;
+  logic [31:0] memory_data_out;
+
+  // Instantiate Memory module
+  Memory mem (
+    .address(memory_address),
+    .data_in(memory_data_in),
+    .write_enable(memory_write),
+    .data_out(memory_data_out)
+  );
+
+  // Instantiate DirectMappedCache module
+  DirectMappedCache cache (
+    .cpu_address(memory_address),
+    .cpu_data_in(memory_data_in),
+    .cpu_write(memory_write),
+    .cpu_read(memory_read),
+    .cpu_data_out(memory_data_out)
+  );
+
+  // Testbench logic - example reads and writes
+  initial begin
+    // Write data to memory at address 0x100 (assuming byte addressing)
+    memory_address = 32'h100;
+    memory_data_in = 32'hABCDEFFF;
+    memory_write = 1;
+    memory_read = 0;
+    #10;
+
+    // Read data from memory at address 0x100
+    memory_address = 32'h100;
+    memory_data_in = 32'h0;
+    memory_write = 0;
+    memory_read = 1;
+    #10;
+
+    // Perform additional tests as needed
+
+    // Finish simulation
+    $finish;
+  end
+
+endmodule : TopModule
+
+```
+
+**Testbench**
+
+``` C++
+#include <verilated.h>
+#include "VTop_cache.h"
+
+int main(int argc, char** argv) {
+    // Initialize Verilator and the module instance
+    Verilated::commandArgs(argc, argv);
+    VTop_cache* top = new VTop_cache;
+
+    // Testbench variables
+    top->memory_address = 0;
+    top->memory_data_in = 0;
+    top->memory_write = 0;
+    top-memory_read = 0;
+
+    // Simulate for 1000 clock cycles
+    for (int i = 0; i < 1000; ++i) {
+        top->memory_address = 0x100;  // Example address
+        top->memory_data_in = 0xABCDEFFF;  // Example data
+        top->memory_write = 1;
+        top->memory_read = 0;
+
+        // Evaluate the module
+        top->eval();
+
+        // Print or check outputs if needed
+        std::cout << "Data Out: " << top->cpu_data_out << std::endl;
+
+        // Advance simulation time
+        top->clk = 0;
+        top->eval();
+        top->clk = 1;
+        top->eval();
+    }
+
+    // Clean up
+    delete top;
+    exit(0);
+}
+
+```
+### Two-way set associative cache
 
 
 
 
-### Cache controller
 
 
 
 
 
 
-### Set
 
 
 
 
-
-
-### Replace controller
 
 
 ## **Conclusion**
