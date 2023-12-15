@@ -1,5 +1,3 @@
-# IAC README
-
 # **Team 02: IAC RISC-V Project**
 
 ## Quick Start
