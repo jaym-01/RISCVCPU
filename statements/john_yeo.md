@@ -333,52 +333,9 @@ logic [TAG_WIDTH + B_WIDTH + 1:0] way_1_cache [3:0];
 
 However, I realised that while this implementation allowed the f1 & reference program to work, it wasn’t very robust because word & half word store & read operations would completely fail.
 
-**Change 2: Writing entire word to data cache (with Jay)**
-
-I realised that another fix was instead of replacing a certain byte within the word stored in the cache, was to fetch the entire word for address (aligned) from the data memory, and write that to the cache entirely every time there was a write operation. This ensured that the tag for each byte remained valid:
-
-```verilog
-logic [D_WIDTH-1:0] new_word_from_mem;
-always_comb begin
-    case (byte_offset)
-        2'b00: new_word_from_mem = {WordFromMem[31:8], WriteData[7:0]};
-        2'b01: new_word_from_mem = {WordFromMem[31:16], WriteData[7:0], WordFromMem[7:0]};
-        2'b10: new_word_from_mem = {WordFromMem[31:24], WriteData[7:0], WordFromMem[15:0]};
-        2'b11: new_word_from_mem = {WriteData[7:0], WordFromMem[23:0]};
-    endcase
-end
-
-always_ff@(posedge clk) begin
-		... // some other code
-    if (WE) begin
-        if (Hit0) begin
-            way_0_cache[set] <= {1'b1, tag, new_word_from_mem};
-            way_1_cache[set][A_WIDTH + D_WIDTH] <= 1'b0; // set U bit to 0
-        end
-
-        else if (Hit1)
-            way_1_cache[set] <= {2'b11, tag, new_word_from_mem}; // write data to cache
-
-        else if (u_bit)
-            way_0_cache[set] <= {1'b1, tag, new_word_from_mem}; // write data to cache
-        else
-            way_1_cache[set] <= {2'b11, tag, new_word_from_mem}; // write data to cache
-    end
-end
-```
-
-When testing this, the f1 & reference programs still worked.
-
 ### Adding the data cache module to top
 
-To integrate the updated data cache module with top, all that was needed was to create another signal (ReadWord) from the data_memory, and add a mux in top to determine whether data should be read from the data cache depending on whether there was a read hit:
-
-**data_memory.sv**
-
-```verilog
-logic [A_WIDTH-1:0] word_addr;
-assign word_addr = {A[A_WIDTH-1:2], 2'b0};
-assign ReadWord = {data_mem_arr[word_addr + 3], data_mem_arr[word_addr + 2], data_mem_arr[word_addr + 1], data_mem_arr[word_addr]};
+To integrate the updated data cache module with top, all that was needed was to add a mux in top to determine whether data should be read from the data cache depending on whether there was a read hit:
 ```
 
 **riscv_top.sv**

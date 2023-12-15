@@ -34,9 +34,9 @@ For Ubuntu:
 
 Versions:
 
-- [Single Cycle](https://github.com/johnyeocx/iac-project-team02/tree/main)
-- [Pipelined](https://github.com/johnyeocx/iac-project-team02/tree/pipeline)
-- [Pipelined Data Cache](https://github.com/johnyeocx/iac-project-team02/tree/pipeline_data_cache)
+- [**Single Cycle**](https://github.com/johnyeocx/iac-project-team02/tree/main): stored on main branch
+- [**Pipelined**](https://github.com/johnyeocx/iac-project-team02/tree/pipeline): stored on branch pipeline
+- [**Pipelined Data Cache**](https://github.com/johnyeocx/iac-project-team02/tree/pipeline_data_cache): stored on branch pipeline_data_cache
 
 ## Videos of working processor:
 

@@ -2,18 +2,25 @@
 
 ## Overview of the components I worked on:
 
-**************Single cycle:**************
+**Single cycle:**
 
 - [Top level file](#top-file)
 - [Testbench](#testbench)
 - [Testing of the CPU with the f1 and reference program](#testing-with-the-f1-and-reference-program)
 
-**************Pipeline:**************
+**Pipeline:**
 
 - [Hazard Unit](#hazard-unit)
 - [Testing of the pipelined CPU with the f1 and reference Program](#testing-with-the-f1-and-reference-program-1)
 
-**NOTE**: For the [commit](https://github.com/johnyeocx/iac-project-team02/commit/5e5b21f507515ffcec1434028997f73127895389), the message “changed the flush and fixed the data memory” should say **“changed the flush and fixed the register file”**
+**Cache:**
+
+- [Extending the cache to store words](#modifying-the-cache-to-store-words-with-john)
+
+---
+**NOTE**: For the [commit 5e5b21f](https://github.com/johnyeocx/iac-project-team02/commit/5e5b21f507515ffcec1434028997f73127895389), the message “changed the flush and fixed the data memory” should say **“changed the flush and fixed the register file”**
+
+---
 
 ## Single Cycle
 
@@ -29,7 +36,7 @@ The multiplexor whose output is connected to the register file’s data input (*
 
 The multiplexor that determines the value of PCNext required at least 1 more input, to implement the `JALR` instruction, since it requires the output of the ALU to be written into the program counter.
 
-When writing the top file ([link to commit](https://github.com/johnyeocx/iac-project-team02/commit/9d5831b4361b3cbae0243e3257e1ecbfe4270f9e#diff-eba8aecac1d84bfb53115d6fbac397c94c702f07a980e8a9ef4268dedf1fee08R45)), the signal `ImmExt` had to be truncated to 12 bits (the width of `PC`) to add it to `PC` since the sum refers to a memory address in the instruction memory, where the address width is 12 bits, the more significant bits have no meaning hence can be truncated. 
+When writing the top file ([in commit 9d5831b](https://github.com/johnyeocx/iac-project-team02/commit/9d5831b4361b3cbae0243e3257e1ecbfe4270f9e#diff-eba8aecac1d84bfb53115d6fbac397c94c702f07a980e8a9ef4268dedf1fee08R45)), the signal `ImmExt` had to be truncated to 12 bits (the width of `PC`) to add it to `PC` since the sum refers to a memory address in the instruction memory, where the address width is 12 bits, the more significant bits have no meaning hence can be truncated. 
 
 ## Testbench
 
@@ -37,7 +44,7 @@ The testbench for this project has been split into 2 separate testbenches, one f
 
 The testbench used to run the f1 program has been kept simple, it creates the .vcd file to record the signals at every change in the value of the clock, which has been useful for debugging (also used in the testbench for the reference program). Additionally, it has been made to run the f1 program immediately and display the value of register a0 and clock cycle on the VBuddy.
 
-The testbench for the reference program was more challenging as it had to detect the end of the build operation, and then display the result on the VBuddy. Initially ([link to commit](https://github.com/johnyeocx/iac-project-team02/commit/660a2bc535181fbe11ef14e1d03cda04eecae71a)), I ran the simulator with the lines calling the VBuddy commented out in the main loop, then used the waveform produced to find the clock cycle when the display subroutine starts. Using the value of the clock cycle, I implemented the code shown below to plot the value of a0 on the VBuddy after the clock cycle found had been reached.
+The testbench for the reference program was more challenging as it had to detect the end of the build operation, and then display the result on the VBuddy. Initially ([in commit 660a2bc](https://github.com/johnyeocx/iac-project-team02/commit/660a2bc535181fbe11ef14e1d03cda04eecae71a)), I ran the simulator with the lines calling the VBuddy commented out in the main loop, then used the waveform produced to find the clock cycle when the display subroutine starts. Using the value of the clock cycle, I implemented the code shown below to plot the value of a0 on the VBuddy after the clock cycle found had been reached.
 
 ```cpp
 if(simCycle > 123703){
@@ -50,7 +57,7 @@ However, when testing with other data sets, such as noisy.mem, the output remain
 
 ![Untitled](../images/jay_waveform_1.png)
 
-To overcome this ([link to commit](https://github.com/johnyeocx/iac-project-team02/commit/9a46165b56321e6f64079ff34710f7037e90ed9e)), I set the initial value of a0 to 0 in the register file using `regs['d10] = {DATA_WIDTH{1'b0}}`, within `inital` statement, to ensure it is always 0 on start-up. The build and init subroutine do not change the value of a0, a0 will only change when a value is being displayed, hence, the testbench only needs to check when the value of a0 is not 0. To ensure that it continues to display a0 if it becomes 0 again, a flag is used: `bool show_signal = false`. The code below has been added to the main loop in the testbench, when the value of a0 changes, it ensures the flag is always set to `true`. This will always plot a0 once a0 has changed from 0.
+To overcome this ([in commit 9a46165](https://github.com/johnyeocx/iac-project-team02/commit/9a46165b56321e6f64079ff34710f7037e90ed9e)), I set the initial value of a0 to 0 in the register file using `regs['d10] = {DATA_WIDTH{1'b0}}`, within `inital` statement, to ensure it is always 0 on start-up. The build and init subroutine do not change the value of a0, a0 will only change when a value is being displayed, hence, the testbench only needs to check when the value of a0 is not 0. To ensure that it continues to display a0 if it becomes 0 again, a flag is used: `bool show_signal = false`. The code below has been added to the main loop in the testbench, when the value of a0 changes, it ensures the flag is always set to `true`. This will always plot a0 once a0 has changed from 0.
 
 ```cpp
 if(show_signal || top->a0 != 0){
@@ -89,13 +96,13 @@ sed -i '17 s/.*/    initial $readmemh("test\/'$data_mem'.mem", data_mem_arr, '"'
 
 ## Testing with the F1 and Reference program
 
-For the initial testing ([link to commit](https://github.com/johnyeocx/iac-project-team02/commit/9d5831b4361b3cbae0243e3257e1ecbfe4270f9e#diff-930ba83de9204454ec64194b9e4364002b91de3c5b767158c134ad784c9f4b29)), I tried to simply compile all of the System Verilog files, where I encountered syntax errors in all of the files, which I corrected, it would have been better to get my teammates to test if there code compiles as they wrote it, which we did when developing the later stages.
+For the initial testing ([in commit 9d5831b](https://github.com/johnyeocx/iac-project-team02/commit/9d5831b4361b3cbae0243e3257e1ecbfe4270f9e#diff-930ba83de9204454ec64194b9e4364002b91de3c5b767158c134ad784c9f4b29)), I tried to simply compile all of the System Verilog files, where I encountered syntax errors in all of the files, which I corrected, it would have been better to get my teammates to test if there code compiles as they wrote it, which we did when developing the later stages.
 
-I searched for logic errors using the GTK wave and the f1 program ([link to commit](https://github.com/johnyeocx/iac-project-team02/commit/f65772f033db698e08b4c2088e4b99a390ded7c0)), which was useful as I could see the values of each signal for every instruction that ran, and it helped me catch a lot of bugs in the different modules, such as in the register file, register a0 was found using `assign a0 = regs['h10]`, however, a0 is stored at index 10 in decimal, which is 0xA, hence I changed it to `assign a0 = regs['d10]`.
+I searched for logic errors using the GTK wave and the f1 program ([in commit f65772f](https://github.com/johnyeocx/iac-project-team02/commit/f65772f033db698e08b4c2088e4b99a390ded7c0)), which was useful as I could see the values of each signal for every instruction that ran, and it helped me catch a lot of bugs in the different modules, such as in the register file, register a0 was found using `assign a0 = regs['h10]`, however, a0 is stored at index 10 in decimal, which is 0xA, hence I changed it to `assign a0 = regs['d10]`.
 
-In the control unit, `BNE` was not implemented correctly ([fixed in commit](https://github.com/johnyeocx/iac-project-team02/commit/f65772f033db698e08b4c2088e4b99a390ded7c0)), I noticed this as the program would not branch when the 2 operands of the ALU are different, this is since it was implemented as `7'b1100011: PCSrc = Zero ? 2'b01 : 2'b00`, when PCSrc = 0, the program counter moves to the next instruction, it does not branch. This was solved by simply swapping the values: `7'b1100011: PCSrc = Zero ? 2'b00 : 2'b01`. `JALR` also did not jump to a new address, since, PCSrc had been implemented as `7'b1100111: PCSrc = 2'b11` for `JALR`, where the PCSrc = 3 is not defined (as seen in the image of the top file design at the very top of this personal statement), hence it was solved by changing it to: `7'b1100111: PCSrc = 2'b10;`. For this case, as 3 was not defined for PCSrc, it defaulted to increment the program counter by 4, due to the way the PC multiplexor was implemented.
+In the control unit, `BNE` was not implemented correctly ([fixed in commit f65772f](https://github.com/johnyeocx/iac-project-team02/commit/f65772f033db698e08b4c2088e4b99a390ded7c0)), I noticed this as the program would not branch when the 2 operands of the ALU are different, this is since it was implemented as `7'b1100011: PCSrc = Zero ? 2'b01 : 2'b00`, when PCSrc = 0, the program counter moves to the next instruction, it does not branch. This was solved by simply swapping the values: `7'b1100011: PCSrc = Zero ? 2'b00 : 2'b01`. `JALR` also did not jump to a new address, since, PCSrc had been implemented as `7'b1100111: PCSrc = 2'b11` for `JALR`, where the PCSrc = 3 is not defined (as seen in the image of the top file design at the very top of this personal statement), hence it was solved by changing it to: `7'b1100111: PCSrc = 2'b10;`. For this case, as 3 was not defined for PCSrc, it defaulted to increment the program counter by 4, due to the way the PC multiplexor was implemented.
 
-I also changed the if statement for the sign extension unit ([in this commit](https://github.com/johnyeocx/iac-project-team02/commit/f65772f033db698e08b4c2088e4b99a390ded7c0)), the new version is shown below, it now uses an else statement instead of specifically defining the value for the condition when ImmSrc = 0, this is since, the total number of possible values when using 3 bits is 8, however only 5 of the values are defined in our implementation (0 to 4), hence, if an error does occur and ImmSrc becomes 5, 6 or 7, the else statement would run, handling the error in a safer way. 
+I also changed the if statement for the sign extension unit ([in commit f65772f](https://github.com/johnyeocx/iac-project-team02/commit/f65772f033db698e08b4c2088e4b99a390ded7c0)), the new version is shown below, it now uses an else statement instead of specifically defining the value for the condition when ImmSrc = 0, this is since, the total number of possible values when using 3 bits is 8, however only 5 of the values are defined in our implementation (0 to 4), hence, if an error does occur and ImmSrc becomes 5, 6 or 7, the else statement would run, handling the error in a safer way. 
 
 ```sv
 if (ImmSrc == 3'd1) ImmExt = {{19{msb}}, Imm[31], Imm[7], Imm[30:25], Imm[11:8], 1'b0}; // B Type Ins
@@ -105,7 +112,7 @@ else if (ImmSrc == 3'd4) ImmExt = {Imm[31:12], 12'b0}; // LUI Ins
 else ImmExt = {{20{msb}}, Imm[31:20]};
 ```
 
-I also found that we had not implemented the `SUB` instruction and that the control unit and ALU were incompatible, this was most likely due to a miscommunication ([solved in commit](https://github.com/johnyeocx/iac-project-team02/commit/5a33fd0a884a8cbd39b7b08b4a028a85465eb309)). I solved this by correctly implementing the ALUSrc based on the table below, which is what we agreed on as a team, the code which implements this in the control unit is shown under the table. For all other instructions, that are not `LUI`, `ADD` or `SUB`, ALUControl will be 000, this ensures there is no random and unpredictable behaviour, making it easier to debug.
+I also found that we had not implemented the `SUB` instruction and that the control unit and ALU were incompatible, this was most likely due to a miscommunication ([solved in commit 5a33fd0](https://github.com/johnyeocx/iac-project-team02/commit/5a33fd0a884a8cbd39b7b08b4a028a85465eb309)). I solved this by correctly implementing the ALUSrc based on the table below, which is what we agreed on as a team, the code which implements this in the control unit is shown under the table. For all other instructions, that are not `LUI`, `ADD` or `SUB`, ALUControl will be 000, this ensures there is no random and unpredictable behaviour, making it easier to debug.
 
 | ALUSrc | Instruction |
 | --- | --- |
@@ -179,7 +186,7 @@ The 2 blue multiplexors in the execute stage have been chosen to be implemented 
 | 01 | Value to be written to the register file at the write stage  |
 | 10 | The ALU result from the memory stage |
 
-To forward values, the multiplexor simply requires logic change the values of `ForwardAE` and `ForwardBE`. I initially implemented ForwardAE ([link to commit](https://github.com/johnyeocx/iac-project-team02/commit/c5c98eed1b90206229f23fb282846224ce82c7c2)) in the way show below (ForwardBE was implemented equivalently with `Rs2E` instead of `Rs1E`), before considering the effects of stalling and flushing. The first condition of the if statement is specific to stalling, it prioritises forwarding the write stage value. It also checks if the value in the memory stage should be forwarded, this is checked before the write stage to ensure only the most recent value is forwarded, then it checks if the wire stage should be forwarded and if neither are true, uses the values found from the register file. 
+To forward values, the multiplexor simply requires logic change the values of `ForwardAE` and `ForwardBE`. I initially implemented ForwardAE (in [commit c5c98ee](https://github.com/johnyeocx/iac-project-team02/commit/c5c98eed1b90206229f23fb282846224ce82c7c2)) in the way show below (ForwardBE was implemented equivalently with `Rs2E` instead of `Rs1E`), before considering the effects of stalling and flushing. The first condition of the if statement is specific to stalling, it prioritises forwarding the write stage value. It also checks if the value in the memory stage should be forwarded, this is checked before the write stage to ensure only the most recent value is forwarded, then it checks if the wire stage should be forwarded and if neither are true, uses the values found from the register file. 
 
 ******************OLD code:******************
 
@@ -190,7 +197,7 @@ else if(RegWriteW && RdW == Rs1E) ForwardAE = 2'b1;
 else ForwardAE = 2'b0;
 ```
 
-Whilst implementing the stall and flush ([link to commit](https://github.com/johnyeocx/iac-project-team02/commit/5e5b21f507515ffcec1434028997f73127895389)), I realised that when a stage is being stalled or flushed, indicated by the flush or stall signal for the stage (e.g. flush2_m = 1 indicates the memory stage is being flushed), forwarding should not occur, which I prevent by adding extra conditions to ensure the stage which is forwarding a value is not in a stall or flush state, using the code below.
+Whilst implementing the stall and flush (found in [commit 5e5b21f](https://github.com/johnyeocx/iac-project-team02/commit/5e5b21f507515ffcec1434028997f73127895389)), I realised that when a stage is being stalled or flushed, indicated by the flush or stall signal for the stage (e.g. flush2_m = 1 indicates the memory stage is being flushed), forwarding should not occur, which I prevent by adding extra conditions to ensure the stage which is forwarding a value is not in a stall or flush state, using the code below.
 
 ```sv
 // starts by checking if the ALUResult from the m stage should be forwared
@@ -199,7 +206,7 @@ else if(flush1_m == 0 && flush2_m == 0 && stall_m == 0 && RegWrite_m && Rd_m == 
 else if(flush1_w == 0 && flush2_w == 0 && stall_w == 0 && RegWrite_w && Rd_w == Rs1_e) ForwardAE = 2'b1;
 ```
 
-This makes the if statement shown below redundant (this has been removed in [this commit](https://github.com/johnyeocx/iac-project-team02/commit/6f5e3e28b28c439c91f5f1848a80fa2f50f10208)).
+This makes the if statement shown below redundant (this has been removed in [commit 6f5e3e2](https://github.com/johnyeocx/iac-project-team02/commit/6f5e3e28b28c439c91f5f1848a80fa2f50f10208)).
 
 ```sv
 if(stall_m == 1 && Rd_w == Rs1_e) ForwardAE = 2'b1;
@@ -207,7 +214,7 @@ if(stall_m == 1 && Rd_w == Rs1_e) ForwardAE = 2'b1;
 
 ****Stalling****
 
-Firstly, the condition to indicate a stall is implemented in the code shown below, if the `LBU` instruction is at the memory stage and the register it will load the data into is used by the execute stage, a stall has happened. This is implemented in [this commit](https://github.com/johnyeocx/iac-project-team02/commit/c5c98eed1b90206229f23fb282846224ce82c7c2#diff-335ac708a1d5853dc8065daac5f19c88dc54a2e6b930322614f7e7ba37f0ba53), however, additional conditions are added in the flushing stage (explained with flushing). 
+Firstly, the condition to indicate a stall is implemented in the code shown below, if the `LBU` instruction is at the memory stage and the register it will load the data into is used by the execute stage, a stall has happened. This is implemented in [commit c5c98ee](https://github.com/johnyeocx/iac-project-team02/commit/c5c98eed1b90206229f23fb282846224ce82c7c2#diff-335ac708a1d5853dc8065daac5f19c88dc54a2e6b930322614f7e7ba37f0ba53), however, additional conditions are added in the flushing stage (explained with flushing). 
 
 ```sv
 if(insOpM == 7'b0000011 && (RdM == Rs1E || RdM == Rs2E)) stall = 1;
@@ -233,7 +240,7 @@ An extra multiplexor has also been included on the top level sheet to ensure the
 
 **Flushing**
 
-At first, I accidently implemented this in a way that causes the memory and write stages to be flushed ([in this commit](https://github.com/johnyeocx/iac-project-team02/commit/ba83ee3425384e11da2908e47f6cf253cb44fb85)), which is incorrect, however I fixed this ([in this commit](https://github.com/johnyeocx/iac-project-team02/commit/5e5b21f507515ffcec1434028997f73127895389)) and will explain this implementation below.
+At first, I accidently implemented this in a way that causes the memory and write stages to be flushed ([in commit ba83ee3](https://github.com/johnyeocx/iac-project-team02/commit/ba83ee3425384e11da2908e47f6cf253cb44fb85)), which is incorrect, however I fixed this ([in commit 5e5b21f](https://github.com/johnyeocx/iac-project-team02/commit/5e5b21f507515ffcec1434028997f73127895389)) and will explain the decision of the fixed implementation below.
 
 The logic to determine whether the fetch or decode stages should be flushed is shown below. The execute stage is the stage where a Jump or Branch changes the value of the program counter, hence, at this stage, it detects if the program counter is being change, and this indicates that the fetch and decode stages contain incorrect data and should not change the state of the CPU. Since they should not change the state of CPU, the if statement first checks if the instruction on the execute stage is being flushed or stalled (as if stalled, the execute stage will contain the wrong information, hence will not be able to decide if it should branch/jump or not). 
 
@@ -259,7 +266,7 @@ Writing to data memory, register file and ensuring PC value doesn’t change has
 
 Forwarding values has been sorted in the forwarding section.
 
-Ensuring a stall does not occur requires the logic for when a stall happens to be changed, which I did on [this commit](https://github.com/johnyeocx/iac-project-team02/commit/5e5b21f507515ffcec1434028997f73127895389#diff-335ac708a1d5853dc8065daac5f19c88dc54a2e6b930322614f7e7ba37f0ba53), the code changed ensures that it does not stall when the memory stage is being flushed, this is shown below.
+Ensuring a stall does not occur requires the logic for when a stall happens to be changed, which I did on [commit 5e5b21f](https://github.com/johnyeocx/iac-project-team02/commit/5e5b21f507515ffcec1434028997f73127895389#diff-335ac708a1d5853dc8065daac5f19c88dc54a2e6b930322614f7e7ba37f0ba53), the code changed ensures that it does not stall when the memory stage is being flushed, this is shown below.
 
 ```sv
 if(insOp_m == 7'b0000011 && (Rd_m == Rs1_e || Rd_m == Rs2_e) && flush1_m == 0 && flush2_m == 0) stall = 1;
@@ -291,9 +298,9 @@ void testResult(int signal, int ans, int ins, std::string signal_name){
 }
 ```
 
-This produced some errors and I had to change some of the code in the control unit, however, I found this method to make it faster and easier to solve problems with the control unit, as I could see all the conditions not met in one place, rather than trying to fix the existing code, it is easier to see if the entire code block should be replaced. This test and fixes can be found at [this commit](https://github.com/johnyeocx/iac-project-team02/commit/a417698735cc9e147a600d73762a2e780e4ed9aa#diff-d66285f26ac0a13197be807036a96d12f68c542228f48cd75cda0bb50f79d174).
+This produced some errors and I had to change some of the code in the control unit, however, I found this method to make it faster and easier to solve problems with the control unit, as I could see all the conditions not met in one place, rather than trying to fix the existing code, it is easier to see if the entire code block should be replaced. This test and fixes can be found in [commit a417698](https://github.com/johnyeocx/iac-project-team02/commit/a417698735cc9e147a600d73762a2e780e4ed9aa#diff-d66285f26ac0a13197be807036a96d12f68c542228f48cd75cda0bb50f79d174).
 
-After implementing this test, I also used it to test the control unit on the single cycle, making some adjustments to the truth table, as the control unit on the single cycle has the input zero and does not have a branch ouput. This can be found in [this commit](https://github.com/johnyeocx/iac-project-team02/commit/7a41ccdbcd3137c83e3873f4e1d6cb64dd4bdb6b).
+After implementing this test, I also used it to test the control unit on the single cycle, making some adjustments to the truth table, as the control unit on the single cycle has the input zero and does not have a branch ouput. This can be found in [commit 7a41ccd](https://github.com/johnyeocx/iac-project-team02/commit/7a41ccdbcd3137c83e3873f4e1d6cb64dd4bdb6b).
 
 ## Testing with the f1 and reference program
 
@@ -316,11 +323,11 @@ The single cycle processor, displays the value 0x2 for 6 clock cycle:
 From waveforms above, it is clear that the first instruction after branching only writes to a register after the final instruction is flushed, which results in extra clock cycles, moving the flushed instructions through the different stages of the processor, whilst in parallel, running operations to execute the next instructions after the branch instruction. Hence, the stretching in the horizontal axis is to be expected for the pipelined implementation.
 
 
-## Modifying the cache to stores words
+## Modifying the cache to store words (with John)
 
 This section refers to [commit a1f34ac](https://github.com/johnyeocx/iac-project-team02/commit/a1f34ac46c38f1cd3c6c01ca5888edae4dd1e9aa).
 
-To improve upon what Ze Quan, Ying Kai & John have implemented for the data cache, I expanded it to ensure that it stores whole words in the data memory, which will increase the number of hits. This would require getting a word out of the data memory each time, which I implemented by creating another output, using the code below.
+To improve upon the cache implemented to store bytes, me and John expanded it to ensure that it stores whole words in the data memory, which will increase the number of hits. This would require getting a word out of the data memory each time, which I implemented by creating another output, using the code below.
 ```sv
 logic [A_WIDTH - 1:0] word_addr = {A[A_WIDTH - 1:2], 2'b0};
 assign Word = {data_mem_arr[word_addr + 3], data_mem_arr[word_addr + 2], data_mem_arr[word_addr + 1], data_mem_arr[word_addr]};
@@ -336,8 +343,9 @@ case(byte_offset)
     2'b10: CacheReadData = {24'b0, way_0_cache[set][23:16]};
     2'b11: CacheReadData = {24'b0, way_0_cache[set][31:24]};
 endcase
-``` 
-When the data memory is being written to, the cache takes the word already stored there and the byte being written and stores it correctly in the cache, using the code below, this has also been implemented with way 1 cache. This approach was taken to ensure it has the same behaviour as the cache that stores bytes.
+```
+
+When the data memory is being written to, the cache takes the word already stored there and the byte being written into the data memory and stores it correctly in the cache, using the code below, this has also been implemented with way 1 cache. This approach was taken to ensure it has the same behaviour as the cache that stores bytes.
 ```sv
 case(byte_offset)
     2'b0: way_0_cache[set] <= {1'b1, tag, DataFromMem[31:8], WriteData[7:0]};
@@ -347,8 +355,9 @@ case(byte_offset)
 endcase
 ```
 
-I modified the top to connect the word output by the data memory with the `DataFromMem` input. After testing it with the pdf and F1, there were problems that appeared due to a change required in the the tag, as the byte offset is not being used, which is fixed in [commit 5f2935f](https://github.com/johnyeocx/iac-project-team02/commit/5f2935f55c3444f21200f26c85a4f2d428cf9c8b). However, after this, both the pdf and f1 program successfully ran, with hits being observed, as can be seen in the waveform below.
+I modified the top file for the CPU to connect the word output from the data memory with the `DataFromMem` input. After testing it with the pdf and F1, there were problems that appeared due to a change required in the the tag, as the byte offset is not being used, which is fixed in [commit 5f2935f](https://github.com/johnyeocx/iac-project-team02/commit/5f2935f55c3444f21200f26c85a4f2d428cf9c8b). However, after this, both the pdf and f1 program successfully ran, with hits being observed, as can be seen in the waveform below.
 
+![Alt text](../images/data_cache_hits.png)
 
 The cache has been implemenented in such way that it does not provide any benefit in the verilator simulator or if the CPU was to be built with actual hardware. With more time this is how we would implement the cache:
 
@@ -356,13 +365,13 @@ The cache has been implemenented in such way that it does not provide any benefi
 - The data memory should become it's own stage that is only used when there is a miss, it should have a stall effect where it waits an extra clock cycle to fetch the data memory. 
 - The greatest time taken by a process is fetching from the data and instruction memory, in this example I will ignore the instruction memory. 
 - The data memory, when required, will take multiple clock cycles to fetch data.
-- This means the maximum time required for each clock cycle can be required, enabling a higher clock rate to be used, hence the data cache will provide an increase in the performance.
+- This means the maximum time required for each clock cycle can be reduced, enabling a higher clock frequency to be used, hence the data cache will provide an increase in the performance.
 
 
 ## Conclusion
 
 This project has been really enjoyable and has helped me better understand the RISC V ISA, as we’ve been able to implement the CPU from scratch and make our own design decisions along the way based on what we believe the best way to implement the ISA of the RISC V is.
 
-To improve on this project, testing the modules independently, using the method I used for the control unit when testing the pipelined CPU would have made it easier to spot and resolve bugs, as well as more thoroughly test components, to ensure they are more robust. This would also be important if we were implementing all the instructions, since some instructions are not used in the f1 and reference program, the only way to validate if they work is through the testing on the individual modules, creating test cases for for each instruction. 
+To improve on this project, testing the modules independently, using the method I used for the control unit when testing the pipelined CPU would have made it easier to spot and resolve bugs, as well as more thoroughly test components, to ensure they are more robust. This would also be important if we were implementing all the instructions, since some instructions are not used in the f1 and reference program, the only way to validate if they work is through the testing on the individual modules, creating test cases for for each instruction.
 
-Communicating more with my team, I believe, would have reduced the number of issues that would have occurred when testing and is something which I have gotten better at over the course of this project, which reduced the number of errors we had towards the end.
+Communicating more with my team, I believe, would have reduced the number of issues that would have occurred when testing and is something which I have gotten better at over the course of this project, which has reduced the number of errors we had towards the end.
