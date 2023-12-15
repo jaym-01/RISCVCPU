@@ -145,3 +145,16 @@ if (Hit == 1'b0)  begin
    end
  end
 ```
+code].
+
+## Conclusion and Reflection
+
+This project provided a solution for efficiently updating a RAM array in the context of cache misses. The logic is designed to handle various scenarios, ensuring accurate and timely data retrieval.
+
+### Reflection
+
+- **Challenges**: cache part with handdling dirty bits
+  
+- **Learning**: how to coorporate in a team
+
+- **Improvements**: adding piplining by myself and LRU replacement policy and write-back policy.
