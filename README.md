@@ -36,7 +36,7 @@ Versions:
 
 - [Single Cycle](https://github.com/johnyeocx/iac-project-team02/tree/main)
 - [Pipelined](https://github.com/johnyeocx/iac-project-team02/tree/pipeline)
-- [Pipelined Data Cache](https://github.com/johnyeocx/iac-project-team02/tree/pipelined_data_cache)
+- [Pipelined Data Cache](https://github.com/johnyeocx/iac-project-team02/tree/pipeline_data_cache)
 
 ## Videos of working processor:
 
@@ -95,7 +95,7 @@ However, throughout the project duration, we helped one another out with each co
 | PC                  | pc/pc.sv                          |      |     | x       |          |
 | Top                 | riscv_top.sv                      |      | x   |         |          |
 | Testing             | f1_riscv_tb.cpp, pdf_riscv_tb.cpp |      | x   |         |          |
-| Shell Files         | run_f1.sh, run_pdf.sh             |      | x   |         |          |
+| Shell Files         | mac_f1.sh, mac_pdf.sh, ubuntu_f1.sh, ubuntu_pdf.sh|      | x   |         |          |
 | Pipeline            | Branch: adding_pipeline           |      |     |         |          |
 | Pipeline stages     | pipelines/                        | x    | x   |         |          |
 | Pipeline top        | riscv_top.sv                      | x    | x   |         |          |
