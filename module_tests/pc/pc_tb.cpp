@@ -1,67 +1,44 @@
 #include "verilated.h"
-#include "verilated_vcd_c.h"
-#include"Vpc.h"
+#include "Vpc.h"
+#include "vector"
+#include "iostream"
 
-
-int main(int argc, char **argv, char** env){
-    int i, clk;
+int main(int argc, char **argv, char **env) {
+    int i;
+    int clk;
 
     Verilated::commandArgs(argc, argv);
+    //init top verilog instance
+    Vpc* top = new Vpc();
+    
+    // colums: | rst | pc_4 | pc_b | pc_r | pc_src | PC 
+    std::vector<std::vector<int>> tests = {
+        {0, 1, 2, 3, 0, 1},
+        {0, 1, 2, 3, 1, 2},
+        {0, 1, 2, 3, 2, 3},
+        {1, 1, 2, 3, 0, 0},
+    };
 
-    // init top instance
-    Vpc *top = new Vpc;
+    top->clk = 1;
 
-    // init trace dump of signals
-    Verilated::traceEverOn(true);
-    VerilatedVcdC *tfp = new VerilatedVcdC;
-    top->trace(tfp, 99);
-    tfp->open("pc.vcd");
+    //run simulation for many clock cycles
+    for (i=0; i < tests.size(); i++) {
 
-    // init inputs and outputs
-    //top->clk = 1;
-   // top->rst = 1;
-    top->pc_4 =0;
-    top->pc_b =0;
-    top->pc_r =0;
-    top->PC =0;
-   for(i=0;i<300;i++){
-       for(clk = 0; clk < 2; clk++){
-            tfp->dump(2*i + clk);
+        top->rst = tests[i][0];
+        top->pc_4 = tests[i][1];
+        top->pc_b = tests[i][2];
+        top->pc_r = tests[i][3];
+        top->pc_src = tests[i][4];
+
+        // evaluate the output 
+        for(clk = 0; clk < 2; clk++) {
             top->clk = !top->clk;
             top->eval();
-        } 
-        
-        if(i==2){
-        //for branch instruction
-        top->pc_src = 1;
-        top->pc_4 =0x014;
-        top->pc_b =0x00C;
-        top->pc_r =0x001;
-        //pc_next should be 0x00C
-     }
-     else if(i==3){
-     //for register instruction
-        top->pc_src = 2;
-        top->pc_4 =0x010;
-        top->pc_b =0x00C;
-        top->pc_r =0x020;
-        //pc_next should be 0x020
+        }
 
-     }
-     else if(i==4){
-       //for adding 4 instruction
-        top->pc_4 =0xFF4;
-        top->pc_b =0xFEC;
-        top->pc_r =0x01C;
-        //pc_next should be 0xFF4
-     }
- }
+        if(top->PC != tests[i][5]) std::cout << "error on test: " << i << std::endl;
 
-
-
-    if(Verilated::gotFinish()) exit(0);
-
-
-    tfp->close();
+        if (Verilated::gotFinish()) exit(0);
+    }
     exit(0);
 }
