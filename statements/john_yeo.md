@@ -298,6 +298,70 @@ As you can see, each of the fetch stage signals that is needed in the later stag
 
 Once Jay implemented the hazard controls, the components were tested and the correct outputs were seen when running the f1 & reference programs.
 
+## Adding Data Cache to top and testing (with Jay)
+
+Commits: [Commit 3bfaf78](https://github.com/johnyeocx/iac-project-team02/commit/3bfaf78bb3ef8094b20ca195328c7ca9d1c70540), [Commit 9dfb205](https://github.com/johnyeocx/iac-project-team02/commit/9dfb205d90f9933d7196a07eeba75338ff112cac)
+
+For this section, me and Jay were tasked with integrating the data cache module that Ze Quan & Ying Kai made with the top design file and ensuring that the programs still worked as expected. In general, the data cache module was added asynchronously to the memory stage of the pipeline. It can be seen as an “addition” to the data memory module, so this means that there weren’t any changed that were needed to be made to the pipelining of the processor.
+
+### Editting the data cache module
+
+Ze Quan & Ying Kai initially built a 2 way set associative cache [Commit 7c976e3](https://github.com/johnyeocx/iac-project-team02/commit/7c976e32e3631f4049a3119e7ff486b991fe55d2), each with. In order to make it work with top, I made the following changes:
+
+**Data size**
+
+This was the most important change I made to the data cache. Initially, the cache contained data sizes of 32 bits, however, because the processor is byte addresable and in the data memory, data was being read and written in bytes, this made the data cache module unstable.
+
+For instance, if some byte of data (byte offset 01 in Address) was written to the cache with tag A, if now there is a read operation for address with tag A, but byte offset 00, the data inside the cache may not be valid.
+
+**Previously**
+
+```verilog
+logic [TAG_WIDTH + D_WIDTH:0] way_0_cache [3:0];
+logic [TAG_WIDTH + D_WIDTH + 1:0] way_1_cache [3:0];
+
+// Per byte replacement strategy example
+if (byte_offset == 2'b00)
+	way_0_cache[set][7:0] = WriteData[7:0];
+```
+
+**New**
+
+```verilog
+logic [TAG_WIDTH + B_WIDTH:0] way_0_cache [3:0];
+logic [TAG_WIDTH + B_WIDTH + 1:0] way_1_cache [3:0];
+```
+
+**Cache representation**
+
+For the initial cache representation made by Ze Quan & Ying Kai, there were 4 rows of 123 bits, with each row representing 2 ways, where each way contained 32 bits of data, 28 bits for the tag, and 1 or 2 extra bits for the U & V bit:
+
+```verilog
+logic [122:0] ram_array [3:0];
+```
+
+This felt a little bit inflexible, and also slightly difficult to work with, so instead I created 2 separate arrays, one for each way, and also used dynamic bit widths with parameters. (See code above)
+
+**Writing to cache**
+
+This was another section which I added to the data cache. For writing to the cache, I considered three possibilities:
+
+- Read operation and there was a hit: Update U bit in way 1 cache
+- Read operation and no hit: Update cache with new data and tag
+- Write operation: Update cache with new data (& tag if it’s a new)
+
+This is done synchronously, similar to how data is written to data memory. On the rising edge of the next clock cycle, data will be written.
+
+### Adding the data cache module to top
+
+To integrate the updated data cache module with top, all that was needed was to connect the appropriate signals, and add a mux to determine whether data should be read from the data cache depending on whether there was a read hit:
+
+```verilog
+assign ReadData_m = hit ? data_from_cache : data_from_memory;
+```
+
+Testing this out with the f1 & reference programs showed them working. Moreover, on further inspection into the waveforms, it could be seen that there were several hits, which means that data was being read from the cache.
+
 ## **Conclusion**
 
 In conclusion, working on the RISCV processor throughout this project has been fun and instrumental in helping me understand fundamentally how the processor works. In particular, the pipelined implementation was more challenging, but offered great insight into how efficiency can be improved by creating each stage and how to propagate signals throughout the stages to maintain the RISCV’s functionality.
