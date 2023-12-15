@@ -332,7 +332,6 @@ module DirectMappedCache (
   end
 ```
 
-The address width is 32 bits so t+b+S=32
 
 4.Hit determination&read.write operations
 
