@@ -73,7 +73,7 @@ Also, the number of width for A1, A2 and A3 are 5 and WE3 is the enable signal. 
 ```
 ### Data Cache
 
-
+###two way set 
 
 ## Files
 
