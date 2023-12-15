@@ -31,8 +31,16 @@ end
 
 <img width="1138" alt="截屏2023-12-15 20 10 52" src="https://github.com/johnyeocx/iac-project-team02/assets/151572498/ccb4246c-e71a-40d0-a3a6-8c63b9edfd53">
 
+Because there are only three functions used here, we simplified the code to :
 
-
+**Code**
+```verilog
+case(ALUctrl)
+	3'b001: SUM = op1 - op2;
+	3'b010: SUM = op2;
+	default: SUM = op1 + op2;
+endcase
+```
 
 ### Register File Module
 
