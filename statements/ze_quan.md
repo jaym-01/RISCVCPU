@@ -149,7 +149,7 @@ For adding cache memory of RISCV processor, I was in charge of adding single-cyc
   - A total of 4 sets
   - Two cache line per set
   - The LRU (Least Recently Used) replacement policy will be used (if have more time)
-  - The Write-through.write-back method will be used
+  - The Write-through/write-back method will be used(if have more time)
   - Forms 4 entry x 122 bits RAM(without adding U bit)
 
 ### Direct-mapped Cache
