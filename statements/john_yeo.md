@@ -17,7 +17,7 @@ Throughout this project, I was tasked with implementing the following components
 
 Additionally, for the single cycle processor, I planned and drew out the additional logic and changes on top of the original diagram, as shown below, for the single cycle processor, so that the entire group was synchronised and in agreement on how to implement the RISCV processor. This diagram is shown below:
 
-![Diagram of Single Cycle CPU](../images/SingleCycleDesign.png)
+![Diagram of Single Cycle CPU](../images/SingleCycleDesign.jpg)
 
 ## Single Cycle
 
