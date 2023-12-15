@@ -414,6 +414,7 @@ module TwoWaySetAssociativeCache (
   input logic cpu_read,
   output logic [31:0] cpu_data_out
 );
+```
 
 2. Cache parameters & memory arrays
   - CACHE_SIZE: Parameter specifying the size of the cache (32 bytes).
