@@ -355,7 +355,7 @@ case(byte_offset)
 endcase
 ```
 
-I modified the top file for the CPU to connect the word output from the data memory with the `DataFromMem` input. After testing it with the pdf and F1, there were problems that appeared due to a change required in the the tag, as the byte offset is not being used, which is fixed in [commit 5f2935f](https://github.com/johnyeocx/iac-project-team02/commit/5f2935f55c3444f21200f26c85a4f2d428cf9c8b). However, after this, both the pdf and f1 program successfully ran, with hits being observed, as can be seen in the waveform below.
+I modified the top file for the CPU to connect the word output from the data memory with the `DataFromMem` input. After testing it with the pdf and F1, there were problems that appeared due to a change required in the the tag, as the byte offset is now being used, which is fixed in [commit 5f2935f](https://github.com/johnyeocx/iac-project-team02/commit/5f2935f55c3444f21200f26c85a4f2d428cf9c8b). However, after this, both the pdf and f1 program successfully ran, with hits being observed, as can be seen in the waveform below.
 
 ![Alt text](../images/data_cache_hits.png)
 
