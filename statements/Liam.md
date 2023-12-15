@@ -7,13 +7,17 @@ This repository contains SystemVerilog code for two modules: ALU (Arithmetic Log
 
 ### ALU Module
 
-The ALU module performs arithmetic and logical operations based on the control signals provided. It supports operations such as addition, subtraction, direct passing of one of the operands, and , or and SLT. However The module also features an output indicating whether the result is zero.
+The ALU module performs arithmetic and logical operations based on the control signals provided. It supports operations such as addition, subtraction, direct passing of one of the operands, and , or and SLT. However, we finally choose 3 of them because only three of them are used in the project. The module also features an output indicating whether the result is zero.
 
 
 
 ### Register File Module
 
 The Register File module serves as a set of registers with read and write functionality. It includes three read ports (RD1, RD2, a0) and one write port (WD3). The module supports asynchronous read access to register 'd10 (a0) and synchronous write access to any register specified by the address (AD3). The initial state of registers 0 and 'd10 is set to zero.
+
+### Data Cache
+
+
 
 ## Files
 
