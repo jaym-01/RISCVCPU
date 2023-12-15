@@ -47,10 +47,23 @@ The three functions are :<img width="198" alt="截屏2023-12-15 22 00 59" src="h
 
 The Register File module serves as a set of registers with read and write functionality. It includes three read ports (RD1, RD2, a0) and one write port (WD3). The module supports asynchronous read access to register 'd10 (a0) and synchronous write access to any register specified by the address (AD3). The initial state of registers 0 and 'd10 is set to zero. The inputs are AD1, AD2, AD3, WE3 and the outputs are a0, RD1 and RD2. 
 
-The instruction from the instrution memory is the inputs of regfile. It has been splited into different inputs of the Regfile. 
+
+![IMG_0577](https://github.com/johnyeocx/iac-project-team02/assets/151572498/9e421407-aea3-4b89-98b2-3e5f105436e0)
+The instruction from the instrution memory is the inputs of regfile. It has been splited into different inputs of the Regfile. (according to which field the bits locate)
+
+
+![IMG_0576](https://github.com/johnyeocx/iac-project-team02/assets/151572498/8a0f446f-80d9-49bf-a6e2-86c2476db841)
 
 
 
+initial set:
+```verilog
+initial begin
+        regs[0]= {ADDRESS_WIDTH{1'b0}};
+    end
+```
+
+Also, the number of width for A1, A2 and A3 are 5 and WE3 is the enable signal.
 ### Data Cache
 
 
