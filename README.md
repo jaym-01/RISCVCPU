@@ -6,9 +6,11 @@
 
 - Ensure the device dev path in vbuddy.cfg file is configured correctly.
 
-- All shell scripts display the ouput on the VBuddy
+- The program executes with the sudo command, as we found it is required to use the port.
 
-- All shell scripts generate a .vcd file with the waveform in the test folder
+- All shell scripts display the ouput on the VBuddy.
+
+- All shell scripts generate a .vcd file with the waveform in the test folder.
 
 For MacOs:
 
