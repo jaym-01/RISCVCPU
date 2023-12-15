@@ -15,6 +15,7 @@ This is the waveform I created for five functions initially.
 
 The code I wrote is :
 **Code**
+```verilog
 always_comb begin
     case (ALUctrl)
         3'b001: SUM = op1 - op2;
@@ -26,6 +27,7 @@ always_comb begin
         default: SUM = op1 + op2;
     endcase
 end
+```
 
 <img width="1138" alt="截屏2023-12-15 20 10 52" src="https://github.com/johnyeocx/iac-project-team02/assets/151572498/ccb4246c-e71a-40d0-a3a6-8c63b9edfd53">
 
