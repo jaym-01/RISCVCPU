@@ -326,8 +326,8 @@ module DirectMappedCache (
   // Extract index and tag from memory address
   always_comb begin
     offset = memory_adress[1:0];
-    index = cpu_address[4:2];
-    tag = cpu_address[31:5];
+    index = memory_address[4:2];
+    tag = memory_address[31:5];
   end
 ```
 
@@ -342,18 +342,18 @@ For direct mapped cache,the tag bits derived from the memory block address are c
     hit = valid[index] && (tag == cache_memory[index][31:5]);
   end
  // Cache read and write operations
-  always_ff @(posedge cpu_read or posedge cpu_write) begin
+  always_ff @(posedge memory_read or posedge memory_write) begin
     if (cpu_read || cpu_write) begin
       hit = 0;
       // Check the cache line for the requested data
       if (valid[index] && (tag == cache_memory[index][31:5])) begin
         hit = 1;
-        cpu_data_out = cache_memory[index];
+        memory_data_out = cache_memory[index];
       end
       // Perform write operation if cpu_write is 1
-      if (cpu_write) begin 
+      if (memory_write) begin
         // Write data to the cache line
-        cache_memory[index] = cpu_data_in;
+        cache_memory[index] = memory_data_in;
         // Set the valid bit
         valid[index] = 1;
       end
@@ -383,16 +383,16 @@ module Top_cache;
 
   // Instantiate DirectMappedCache module
   DirectMappedCache cache (
-    .cpu_address(memory_address),
-    .cpu_data_in(memory_data_in),
-    .cpu_write(memory_write),
-    .cpu_read(memory_read),
-    .cpu_data_out(memory_data_out)
+    .memory_address(memory_address),
+    .memory_data_in(memory_data_in),
+    .memory_write(memory_write),
+    .memory_read(memory_read),
+    .memory_data_out(memory_data_out)
   );
 
-  // Testbench logic - example reads and writes
+  // Test examples
   initial begin
-    // Write data to memory at address 0x100 (assuming byte addressing)
+    // Write data to memory at address 0x100 
     memory_address = 32'h100;
     memory_data_in = 32'hABCDEFFF;
     memory_write = 1;
@@ -406,13 +406,10 @@ module Top_cache;
     memory_read = 1;
     #10;
 
-    // Perform additional tests as needed
-
-    // Finish simulation
     $finish;
   end
 
-endmodule : TopModule
+endmodule : Top_cache
 
 ```
 
