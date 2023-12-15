@@ -46,7 +46,7 @@ Outputs from ALU&control unit goes to PC inputs:
 
 **Multiplexer**
 
-This determine pc_next(the internal logic that will tranmitt to output logic PC). There are three possible cases:
+This determine pc_next(the internal logic that will transmitt to output logic PC). There are three possible cases:
 
 | Case      | PCSrc | Meaning                                                         |
 | --------- | ----- | --------------------------------------------------------------- |
