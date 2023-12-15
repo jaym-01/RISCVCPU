@@ -270,7 +270,7 @@ module Memory (
   // Read and write operations
   always_ff @(posedge write_enable) begin
     if (write_enable) begin
-      // Write data to main memory
+      // Write data to main memoy
       memory[address/BLOCK_SIZE] = data_in;
     end
   end
@@ -315,7 +315,7 @@ module DirectMappedCache (
  parameter int BLOCK_SIZE = 4; // 4 bytes per block
  parameter int SETS = CACHE_SIZE/BLOCK_SIZE; // Number of sets
 
- // Cache memory
+ // define arrays
  logic [31:0] cache_memory [0: SETS-1];
  logic valid [0: SETS-1];
 ```
@@ -359,16 +359,12 @@ For direct mapped cache,the tag bits derived from the memory block address are c
   always_ff @(posedge memory_read or posedge memory_write) begin
     if (cpu_read || cpu_write) begin
       hit = 0;
-      // Check the cache line for the requested data
       if (valid[index] && (tag == cache_memory[index][31:5])) begin
         hit = 1;
         memory_data_out = cache_memory[index];
       end
-      // Perform write operation if cpu_write is 1
       if (memory_write) begin
-        // Write data to the cache line
         cache_memory[index] = memory_data_in;
-        // Set the valid bit
         valid[index] = 1;
       end
     end
@@ -387,7 +383,7 @@ module Top_cache;
   logic memory_read;
   logic [31:0] memory_data_out;
 
-  // Instantiate Memory module
+  // Instantiate
   Memory mem (
     .address(memory_address),
     .data_in(memory_data_in),
@@ -395,7 +391,7 @@ module Top_cache;
     .data_out(memory_data_out)
   );
 
-  // Instantiate DirectMappedCache module
+  // Instantiate
   DirectMappedCache cache (
     .memory_address(memory_address),
     .memory_data_in(memory_data_in),
@@ -404,7 +400,7 @@ module Top_cache;
     .memory_data_out(memory_data_out)
   );
 
-  // Test examples
+  // Test inputs
   initial begin
     // Write data to memory at address 0x100
     memory_address = 32'h100;
@@ -434,11 +430,9 @@ endmodule : Top_cache
 #include "VTop_cache.h"
 
 int main(int argc, char** argv) {
-    // Initialize Verilator and the module instance
     Verilated::commandArgs(argc, argv);
     VTop_cache* top = new VTop_cache;
 
-    // Testbench variables
     top->memory_address = 0;
     top->memory_data_in = 0;
     top->memory_write = 0;
@@ -446,18 +440,16 @@ int main(int argc, char** argv) {
 
     // Simulate for 1000 clock cycles
     for (int i = 0; i < 1000; ++i) {
-        top->memory_address = 0x100;  // Example address
-        top->memory_data_in = 0xABCDEFFF;  // Example data
+        top->memory_address = 0x100;  // try an address and verify
+        top->memory_data_in = 0xABCDEFFF;  // try an data and verify
         top->memory_write = 1;
         top->memory_read = 0;
 
-        // Evaluate the module
         top->eval();
 
-        // Print or check outputs if needed
+        // check outputs
         std::cout << "Data Out: " << top->cpu_data_out << std::endl;
 
-        // Advance simulation time
         top->clk = 0;
         top->eval();
         top->clk = 1;
@@ -478,4 +470,8 @@ This part not complete yet so finally we didn't choose this as final version, ju
 
 ## **Conclusion**
 
-This group cooperation was very pleasant and smooth. My team members is very kind and friendly. They taught me a lot of things during this process and made me make great progress. As for my contribution to this project, I would like to say that my ability is relatively weak among all the four people, so there are not many things that I can help the team to complete. However, everyone has been helping me and encouraging me to do more things that can increase my contribution,so I really aprreciate that. For the operations that I am not familiar with, john and jay always teach me how to do them and leave me notes to facilitate my review later. They also gave me time to research and study when I am struggling my part, and they also answer my questions that I could not solve individually and help me debug. I feel very lucky to finish this project together with everyone and really learned a lot, which also made my coding ability improved a lot. In practice, I also learned how to pull and push to github, how to commit, how to write README, and how to work in a team and be a responsible person. If I have more time, I will continue to study the unfinished LRU replacement policy and write through/back policy to make the logic of this cache unit more rigorous.
+In the collaborative endeavor within our group, we fostered a highly pleasant and seamless working environment. Throughout the project, my team members consistently exhibited kindness and friendliness, providing not only valuable guidance but also significantly contributing to my learning journey. Recognizing that my individual skills may be comparatively weaker, I acknowledge limitations in directly contributing to team tasks. However, the unwavering support and encouragement from the team have been instrumental in inspiring me to broaden my contributions, for which I am sincerely appreciative.
+
+In the face of unfamiliar operations, John and Jay consistently extended their guidance, explaining procedures, and offering detailed notes for future reference. Their willingness to allocate time for research and study during challenging moments, coupled with their prompt assistance in answering questions and aiding in debugging, has been invaluable. Collaborating with the entire team has proven to be an immensely fortunate experience, resulting in substantial learning and a noteworthy enhancement of my coding abilities.
+
+Practically, I acquired proficiency in GitHub operations, encompassing pulling, pushing, committing, and crafting README files. Additionally, the experience enriched my teamwork skills and instilled a heightened sense of responsibility. Given additional time, my intention is to delve deeper into the study of the unfinished LRU replacement policy and the write-through/write-back policy, aiming to refine the logic of our cache unit.
