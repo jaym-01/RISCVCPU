@@ -30,7 +30,7 @@ end
 ```
 
 
-Because there are only three functions used here, we simplified the code to :(the number for ALUctrl is only 1 and 2 and 
+Because there are only three functions used here, we simplified the code to :the number for ALUctrl is only 1 and 2 and default is made in case of an error occurred. (and then the function is addition)
 
 **Code**
 ```verilog
@@ -63,7 +63,14 @@ initial begin
     end
 ```
 
-Also, the number of width for A1, A2 and A3 are 5 and WE3 is the enable signal.
+Also, the number of width for A1, A2 and A3 are 5 and WE3 is the enable signal. When WE3=1 and AD3 is not equal to 0, the data of WD3 will be stored in address with AD3.
+
+**Code**
+```verilog
+@always_ff @(posedge clk) begin
+        if(WE3 && AD3 != 0) regs[AD3] <= WD3;
+    end
+```
 ### Data Cache
 
 
