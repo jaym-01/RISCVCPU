@@ -205,14 +205,14 @@ For adding cache memory of RISCV processor, I was in charge of adding direct map
 - For the direct mapped cache implementation used :
   - A total of 8 sets
   - Single cache line per set
-  - The LRU (Least Recently Used) replacement policy will be used (if have more time)
-  - The Write through method will be used(if have more time)
+  - No need of any replacement policy
+  - The Write-back method will be used(if have more time)
   - Forms 8 entry x 60 bits RAM(without adding U bit)
 - For the two-way set associative cache implementation used :
   - A total of 4 sets
   - Two cache line per set
   - The LRU (Least Recently Used) replacement policy will be used (if have more time)
-  - The Write through method will be used(if have more time)
+  - The Write-back method will be used(if have more time)
   - Forms 4 entry x 122 bits RAM(without adding U bit)
 
 ### Direct-mapped Cache
