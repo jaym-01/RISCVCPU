@@ -12,8 +12,8 @@ The ALU module performs arithmetic and logical operations based on the control s
 This is the waveform I created for five functions initially.
 
 ![PHOTO-2023-11-30-09-24-03](https://github.com/johnyeocx/iac-project-team02/assets/151572498/509fd50c-572f-4ef8-a0a5-6739d284fa72)
+<img width="1138" alt="截屏2023-12-15 20 10 52" src="https://github.com/johnyeocx/iac-project-team02/assets/151572498/ccb4246c-e71a-40d0-a3a6-8c63b9edfd53">
 
-The code I wrote is :
 **Code**
 ```verilog
 always_comb begin
