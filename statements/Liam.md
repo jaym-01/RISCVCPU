@@ -30,3 +30,55 @@ The Register File module serves as a set of registers with read and write functi
 - Specify read addresses (`AD1` and `AD2`) to get data from corresponding registers.
 - Specify the write address (`AD3`), data (`WD3`), and write enable (`WE3`) to write data to a specific register.
 
+**Code**
+``` verilog
+module alu #(
+    parameter DATA_WIDTH = 32
+)(
+    input logic [DATA_WIDTH-1:0] op1,
+    input logic [DATA_WIDTH-1:0] op2,
+    input logic [2:0] ALUctrl,
+    output logic [DATA_WIDTH-1:0] SUM,
+    output logic zero
+);
+    assign zero = op1 == op2;
+
+    always_comb
+        case(ALUctrl)
+            3'b001: SUM = op1 - op2;
+            3'b010: SUM = op2;
+            default: SUM = op1 + op2;
+        endcase
+endmodule module regfile #(
+    parameter ADDRESS_WIDTH = 5,
+    DATA_WIDTH = 32
+)(
+    input logic clk,
+    input logic [ADDRESS_WIDTH-1:0] AD1,
+    input logic [ADDRESS_WIDTH-1:0] AD2,
+    input logic [ADDRESS_WIDTH-1:0] AD3,
+    input logic WE3,
+    input logic [DATA_WIDTH-1:0] WD3,
+    output logic [DATA_WIDTH-1:0] a0,
+    output logic [DATA_WIDTH-1:0] RD1,
+    output logic [DATA_WIDTH-1:0] RD2
+);
+
+    logic [DATA_WIDTH-1:0] regs [2**ADDRESS_WIDTH-1:0];
+
+    initial begin
+        regs[0] = {DATA_WIDTH{1'b0}};
+        regs['d10] = {DATA_WIDTH{1'b0}};
+    end
+
+    assign RD1 = regs[AD1];
+    assign RD2 = regs[AD2];
+    assign a0 = regs['d10];  // a0 made async **
+
+    always_ff @(posedge clk) begin
+        if(WE3 && AD3 != 0) regs[AD3] <= WD3;
+    end
+
+endmodule
+```
+
