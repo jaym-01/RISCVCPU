@@ -40,11 +40,16 @@ case(ALUctrl)
 	default: SUM = op1 + op2;
 endcase
 ```
-The three functions are :
+The three functions are :<img width="198" alt="截屏2023-12-15 22 00 59" src="https://github.com/johnyeocx/iac-project-team02/assets/151572498/0207ca6c-15f4-4397-9d6f-6342d887fd2d">
+
 
 ### Register File Module
 
-The Register File module serves as a set of registers with read and write functionality. It includes three read ports (RD1, RD2, a0) and one write port (WD3). The module supports asynchronous read access to register 'd10 (a0) and synchronous write access to any register specified by the address (AD3). The initial state of registers 0 and 'd10 is set to zero.
+The Register File module serves as a set of registers with read and write functionality. It includes three read ports (RD1, RD2, a0) and one write port (WD3). The module supports asynchronous read access to register 'd10 (a0) and synchronous write access to any register specified by the address (AD3). The initial state of registers 0 and 'd10 is set to zero. The inputs are AD1, AD2, AD3, WE3 and the outputs are a0, RD1 and RD2. 
+
+The instruction from the instrution memory is the inputs of regfile. It has been splited into different inputs of the Regfile. 
+
+
 
 ### Data Cache
 
