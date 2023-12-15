@@ -15,16 +15,17 @@ After finishing and debuging the code for program counter I started simulation f
 
 **Data Cache**
 
-- I seperate the cache design into two parts:
-    - Direct mapped cache 
-    - Two-way set associative cache
+- I choose to design direct-mapped cache which contains:
+    - Memory module
+    - Cache module
+    - Top-level file
+    - Testbench
 
 ## Single Cycle
 
 
 The core of program counter is a MUX. I need to integrate all the different instructions into MUX and specify collected signals into different types of instruction implementations. In this part, I need to consider the components from other members' block and understand each logic.Finally I mapped the hardware logic into software logic and done the simulation.
 
-Also,as for personal work at beginning, testing program seems is not mandatory. However, when I realized that we work as a team, it will be very helpful for us to test our own program well before the final integration and verification stage, because we can make sure that the previous progress is correct.This makes our team more efficient and saves a lot of time.
 ![Block diagram of PC](https://i.postimg.cc/WbnYbcq9/IMG-1709.jpg)
 
 ### Program Counter
@@ -320,6 +321,7 @@ module DirectMappedCache (
 | tag           |   memory_address[31:5]                              |                          
 ``` verilog
   // Cache control signals
+  logic [1:0] offset;
   logic [2:0] index;
   logic [26:0] tag;
   logic hit;
@@ -456,22 +458,6 @@ int main(int argc, char** argv) {
 }
 
 ```
-### Two-way set associative cache
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## **Conclusion**
 This group cooperation was very pleasant and smooth. My team members is very kind and friendly. They taught me a lot of things during this process and made me make great progress. As for my contribution to this project, I would like to say that my ability is relatively weak among all the four people, so there are not many things that I can help the team to complete. However, everyone has been helping me and encouraging me to do more things that can increase my contribution,so I really aprreciate that. For the operations that I am not familiar with, john and jay always teach me how to do them and leave me notes to facilitate my review later. They also gave me time to research and study when I am struggling my part, and they also answer my questions that I could not solve individually and help me debug. I feel very lucky to finish this project together with everyone and really learned a lot, which also made my coding ability improved a lot. In practice, I also learned how to pull and push to github, how to commit, how to write README, and how to work in a team and be a responsible person. If I have more time, I will continue to study the unfinished LRU replacement policy and write through/back policy to make the logic of this cache unit more rigorous.
