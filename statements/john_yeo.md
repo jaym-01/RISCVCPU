@@ -15,6 +15,9 @@ Throughout this project, I was tasked with implementing the following components
 
 - [Implementing the primary pipelined stages and additional components to support pipelined signals (e.g. D Flip Flops)](#pipeline)
 
+**Data Cache**
+- [Integrating data cache module with top and testing to make sure it works](#adding-data-cache-to-top-and-testing-with-jay)
+
 Additionally, for the single cycle processor, I planned and drew out the additional logic and changes on top of the original diagram, as shown below, for the single cycle processor, so that the entire group was synchronised and in agreement on how to implement the RISCV processor. This diagram is shown below:
 
 ![Diagram of Single Cycle CPU](../images/SingleCycleDesign.jpg)
@@ -31,7 +34,7 @@ Additionally, I have illustrated how I implemented the other 3 components: exten
 
 The control unit takes in 4 signals:
 
-1. op: Type of instruction
+1. op
 2. funct7
 3. funct3
 4. Zero
@@ -46,7 +49,7 @@ This controls what the next PC instruction is. There are three possible cases:
 | --------- | ----- | -------------------------------------------------------------------------------- |
 | PC + 4    | 2‘b00 | This is the regular case                                                         |
 | PC + Imm  | 2‘b01 | This is when the branch condition is true (Zero == 1) OR when there is a JAL ins |
-| Rd1 + Imm | 2’b10 | When there is a JALR (RET) ins                                                   |
+| Rd1 + Imm | 2’b10 | This is when there is a JALR (RET) ins                                                   |
 
 **ImmSrc (3 bits)**
 
@@ -62,7 +65,7 @@ This controls how the Imm value is sign extended in the **extend** component. Ea
 
 **ALUControl (3 bits)**
 
-This controls the operation performed by the ALU, and hence the output ALUResult. Although ALUControl is 3 bits, only 3 values were ultimately used, but 3 bits was ultimately used for flexibility, incase extra instructions were to be added later on. The ALUControl values correspond to the following, which was determined from both the **op and funct7** variables:
+This controls the operation performed by the ALU, and hence the output ALUResult. Although ALUControl is 3 bits, only 3 values were used, but 3 bits was ultimately kept for flexibility, in case extra instructions were to be added later on. The ALUControl values correspond to the following, which was determined from both the **op and funct7** inputs:
 
 | ALUControl | ALU Result         |
 | ---------- | ------------------ |
@@ -76,7 +79,7 @@ Although the SUB instruction was technically not needed, we eventually used it i
 
 MemSrc is used to indicate the type of load / store byte operation (such as byte, halfword or word). The MemSrc signal has the following meanings:
 
-**MemSrc[2]**: if 1, then load data with zero extension, otherwise signed extension
+**MemSrc[2]**: if 1, then load data with zero extension, otherwise use sign extension
 
 | MemSrc[1:0] | Meaning             |
 | ----------- | ------------------- |
@@ -84,7 +87,7 @@ MemSrc is used to indicate the type of load / store byte operation (such as byte
 | 2’b01       | Half Word operation |
 | 2’b11       | Word operation      |
 
-Although technically not used by the reference program, since only SB & LBU instructions were written, it was implemented just to make the data memory component more complete.
+Although technically not used by the reference program, since there were only SB & LBU instructions, it was implemented just to make the data memory component more complete.
 
 **RegWSrc (2 bits)**
 
@@ -115,7 +118,7 @@ assign wd3 = rw_src == 2'b01 ? read_data
 
 **Other 1 bit control signals**
 
-The control unit also implements the following 1 bit signals, which control whether to write to memory, the SrcB signal in ALU, as well as whether to write to register file:
+The control unit also implements the following 1 bit signals, which control whether to write to memory, whether the SrcB signal in ALU comes from Immediate or Rd2, and whether to write to the register file:
 
 | Signal   | Meaning                          | Relevant Ins                   |
 | -------- | -------------------------------- | ------------------------------ |
@@ -153,7 +156,7 @@ The instruction memory component is relatively simple, as it simply declares a 2
 - 2^A_WIDTH memory locations
 - Each memory location holds 7 bit data
 
-The reason for the 7 bit data width used is because RISCV is byte addressable, and so each data location should hold 7 bits of data.
+The reason for the 7 bit data width is because RISCV is byte addressable, and so each data location should hold 7 bits of data.
 
 However, since instructions are 32 bits each, each read operation will input an address that is a multiple of 4, and the output data will be a 32 bit instruction, with the format as such:
 
@@ -190,7 +193,7 @@ if (WE == 1) begin
 end
 ```
 
-1. Read from address A and output to **RD:**
+2. Read from address A and output to **RD:**
 
 ```verilog
 always_comb begin
@@ -259,13 +262,13 @@ end;
 
 After that, the output would be whichever “version” of the signal which would be used. In this case, PCPlus4_w would be used in the writeback stage.
 
-However, the problem of this implementation arose when Jay tried to implement the hazard unit. Because all these pipelined signals were contained inside their components, he wasn’t able to effectively perform stall, flush & forwarding operations inside of them. On my part, I should have worked more closely with him, instead of working on this separately. As a result, we had to switch out design of the pipeline processor to implementation 2.
+However, the problem of this implementation arose when Jay tried to implement the hazard unit. Because all these pipelined signals were contained inside their components, he wasn’t able to effectively perform stall, flush & forwarding operations inside of them. On my part, I should have worked more closely with him, instead of working on this separately. As a result, we had to switch out the design of the pipeline processor to implementation 2.
 
 ### Implementation 2
 
 Commits: [Commit e766856](https://github.com/johnyeocx/iac-project-team02/commit/e766856b5e614dac860aafbc517e00098789c11b), [Commit 0764a1c](https://github.com/johnyeocx/iac-project-team02/commit/0764a1c777932dd104b153926d776da254470a55)
 
-For the second implementation, each component would process signals as it would in the single cycle, and there would then be a pipelined component, which simply contains flip flops to pass the signals from one stage to the next.
+For the second implementation, each module would process signals as it would in the single cycle, and there would then be a pipeline component, which simply contains flip flops to pass the signals from one stage to the next.
 
 Using the example of PC above, the PC component looks like the following:
 
@@ -302,7 +305,7 @@ Once Jay implemented the hazard controls, the components were tested and the cor
 
 Commits: [Commit 3bfaf78](https://github.com/johnyeocx/iac-project-team02/commit/3bfaf78bb3ef8094b20ca195328c7ca9d1c70540), [Commit 9dfb205](https://github.com/johnyeocx/iac-project-team02/commit/9dfb205d90f9933d7196a07eeba75338ff112cac)
 
-For this section, me and Jay were tasked with integrating the data cache module that Ze Quan & Ying Kai made with the top design file and ensuring that the programs still worked as expected. In general, the data cache module was added asynchronously to the memory stage of the pipeline. It can be seen as an “addition” to the data memory module, so this means that there weren’t any changed that were needed to be made to the pipelining of the processor.
+For this section, me and Jay were tasked with integrating the data cache module that Ze Quan & Ying Kai made with the top design file and ensuring that the programs still worked as expected. In general, the data cache module was added asynchronously to the memory stage of the pipeline. It can be seen as an “addition” to the data memory module, so this means that there weren’t any changes that were needed to be made to the pipelining of the processor.
 
 ### Editting the data cache module
 
@@ -310,7 +313,7 @@ Ze Quan & Ying Kai initially built a 2 way set associative cache [Commit 7c976e3
 
 **Writing to cache**
 
-This was a section which I worked on for the data cache. For writing to the cache, I considered three possibilities:
+I needed to implement logic for writing data to the cache. For this, I considered three possibilities:
 
 - Read operation and there was a hit: Update U bit in way 1 cache
 - Read operation and no hit: Update cache with new data and tag
@@ -331,7 +334,7 @@ logic [TAG_WIDTH + B_WIDTH:0] way_0_cache [3:0];
 logic [TAG_WIDTH + B_WIDTH + 1:0] way_1_cache [3:0];
 ```
 
-However, I realised that while this implementation allowed the f1 & reference program to work, it wasn’t very robust because word & half word store & read operations would completely fail. To fix this, we took a different approach, which can be found [here](https://github.com/johnyeocx/iac-project-team02/blob/main/statements/Jay.md#modifying-the-cache-to-store-words-with-john).
+However, I realised that while this implementation allowed the f1 & reference program to work, it wasn’t very robust because word & half word store & read operations would completely fail. To fix this, we took a different approach, which Jay implemented and can be found [here](https://github.com/johnyeocx/iac-project-team02/blob/main/statements/Jay.md#modifying-the-cache-to-store-words-with-john).
 
 ### Adding the data cache module to top
 
@@ -347,6 +350,6 @@ Testing this out with the f1 & reference programs showed them working. Moreover,
 
 ## **Conclusion**
 
-In conclusion, working on the RISCV processor throughout this project has been fun and instrumental in helping me understand fundamentally how the processor works. In particular, the pipelined implementation was more challenging, but offered great insight into how efficiency can be improved by creating each stage and how to propagate signals throughout the stages to maintain the RISCV’s functionality.
+In conclusion, working on the RISCV processor throughout this project has been fun and instrumental in helping me understand fundamentally how the processor works. In particular, the pipelined implementation was more challenging, but offered great insight into how efficiency can be improved by creating each stage and how to propagate signals throughout the stages to maintain the RISCV processor’s functionality.
 
 One mistake I made was implementing the pipelined stage without regard for how the hazard control would be done, and this resulted in me having to do a reimplementation, but nevertheless an important lesson on the importance of coordination in a team.
