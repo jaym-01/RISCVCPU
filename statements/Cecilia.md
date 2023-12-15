@@ -202,7 +202,7 @@ After running the shell script pc.vcd file was generated and displayed in GTKwav
 
 ## Data Cache
 
-For adding cache memory of RISCV processor, I was in charge of adding direct mapping cache and two-way set associative cache(without replacement and write policy) for a 4GB main memory which is organized as 4-byte blocks, and a direct-mapped cache/two-way set associative cache of 32 bytes with a block size of 4 bytes.
+For adding cache memory of RISCV processor, I was in charge of adding direct mapping cache and tried to do two-way set associative cache for a 4GB main memory which is organized as 4-byte blocks, and a direct-mapped cache/two-way set associative cache of 32 bytes with a block size of 4 bytes.
 - For the direct mapped cache implementation used :
   - A total of 8 sets
   - Single cache line per set
@@ -458,6 +458,11 @@ int main(int argc, char** argv) {
 }
 
 ```
+### Two-way set associative cache
+
+A set-associative cache can be imagined as a n × m matrix. The cache is divided into ‘n’ sets and each set contains ‘m’ cache lines. A memory block is first mapped onto a set and then placed into any cache line of the set.
+not complete yet so finally we didn't choose this version, just leave it as practice.In this file I will attach all my thinking process and progress
+
 
 ## **Conclusion**
 This group cooperation was very pleasant and smooth. My team members is very kind and friendly. They taught me a lot of things during this process and made me make great progress. As for my contribution to this project, I would like to say that my ability is relatively weak among all the four people, so there are not many things that I can help the team to complete. However, everyone has been helping me and encouraging me to do more things that can increase my contribution,so I really aprreciate that. For the operations that I am not familiar with, john and jay always teach me how to do them and leave me notes to facilitate my review later. They also gave me time to research and study when I am struggling my part, and they also answer my questions that I could not solve individually and help me debug. I feel very lucky to finish this project together with everyone and really learned a lot, which also made my coding ability improved a lot. In practice, I also learned how to pull and push to github, how to commit, how to write README, and how to work in a team and be a responsible person. If I have more time, I will continue to study the unfinished LRU replacement policy and write through/back policy to make the logic of this cache unit more rigorous.
