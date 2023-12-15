@@ -7,7 +7,9 @@ This repository contains SystemVerilog code for two modules: ALU (Arithmetic Log
 
 ### ALU Module
 
-The ALU module performs arithmetic and logical operations based on the control signals provided. It supports operations such as addition, subtraction, and direct passing of one of the operands. The module also features an output indicating whether the result is zero.
+The ALU module performs arithmetic and logical operations based on the control signals provided. It supports operations such as addition, subtraction, direct passing of one of the operands, and , or and SLT. However The module also features an output indicating whether the result is zero.
+
+
 
 ### Register File Module
 
