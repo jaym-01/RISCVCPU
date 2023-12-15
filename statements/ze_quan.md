@@ -107,84 +107,15 @@ always_comb
 ### Testbench
 
 What I have done:
-1.Created a testbench for Program counter
-1.In the testbench tried different combinations of input and compare the output with expected
-1.Created a shell file to run the simulation
-**Code For Testbench**
-
-```C++
-#include "verilated.h"
-#include "verilated_vcd_c.h"
-#include"Vpc.h"
-
-
-int main(int argc, char **argv, char** env){
-    int i, clk;
-
-    Verilated::commandArgs(argc, argv);
-
-    // init top instance
-    Vpc *top = new Vpc;
-
-    // init trace dump of signals
-    Verilated::traceEverOn(true);
-    VerilatedVcdC *tfp = new VerilatedVcdC;
-    top->trace(tfp, 99);
-    tfp->open("pc.vcd");
-
-    // init inputs and outputs
-    //top->clk = 1;
-   // top->rst = 1;
-    top->pc_4 =0;
-    top->pc_b =0;
-    top->pc_r =0;
-    top->PC =0;
-   for(i=0;i<300;i++){
-       for(clk = 0; clk < 2; clk++){
-            tfp->dump(2*i + clk);
-            top->clk = !top->clk;
-            top->eval();
-        }
-
-        if(i==2){
-        //for branch instruction
-        top->pc_src = 1;
-        top->pc_4 =0x014;
-        top->pc_b =0x00C;
-        top->pc_r =0x001;
-        //pc_next should be 0x00C
-     }
-     else if(i==3){
-     //for register instruction
-        top->pc_src = 2;
-        top->pc_4 =0x010;
-        top->pc_b =0x00C;
-        top->pc_r =0x020;
-        //pc_next should be 0x020
-
-     }
-     else if(i==4){
-       //for adding 4 instruction
-        top->pc_4 =0xFF4;
-        top->pc_b =0xFEC;
-        top->pc_r =0x1C;
-        //pc_next should be 0xFF4
-     }
- }
-
-
-
-    if(Verilated::gotFinish()) exit(0);
-
-
-    tfp->close();
-    exit(0);
-}
-```
+1. Created a testbench for Program counter
+2. In the testbench tried different combinations of input and compare the output with expected
+3. Created a shell file to run the simulation
 
 In this code I tried different combination of address and compare the output with the expected value
 
-One mistake I made here was assigning the value of pc_src.Because testbench using C++ and I specifeid the value in systemverilog.Another was unmatched bits in assigning memory address value.At first I defined the Data width was 12 bits but here I used 32 bits.After changing it the program works well.
+One mistake I made here was assigning the value of pc_src.Because testbench using C++ and I specifeid the value in systemverilog.
+Another was unmatched bits in assigning memory address value.At first I defined the Data width was 12 bits but here I used 32 bits.
+After changing it the program works well.
 
 **The old code**
 
@@ -202,9 +133,7 @@ One mistake I made here was assigning the value of pc_src.Because testbench usin
 ### Test results
 
 After running the shell script pc.vcd file was generated and displayed in GTKwave
--As shown in the picture when the pc_src=10,corresponding to the output will be same as the input of pc_r.The actual output matched the expected value.
-
-## ![Wavform generated](https://i.postimg.cc/g2ZC1NGK/Full-Size-Render.jpg)
+-which comfirmed that the test results are same as the expected value.Thus the actual output matched the expected value.
 
 ## Data Cache
 
@@ -220,7 +149,7 @@ For adding cache memory of RISCV processor, I was in charge of adding single-cyc
   - A total of 4 sets
   - Two cache line per set
   - The LRU (Least Recently Used) replacement policy will be used (if have more time)
-  - The Write-back method will be used(if have more time)
+  - The Write-through.write-back method will be used
   - Forms 4 entry x 122 bits RAM(without adding U bit)
 
 ### Direct-mapped Cache
@@ -468,6 +397,93 @@ int main(int argc, char** argv) {
 A set-associative cache can be imagined as a n × m matrix. The cache is divided into ‘n’ sets and each set contains ‘m’ cache lines.For two-way set associative cache m=2. A memory block is first mapped onto a set and then placed into any cache line of the set.
 This part wrote by me is not completed yet so finally we didn't choose this as final version, just leave it as practice.Jay and John further modify this part with correct and complete code and adding pipelining to the cache memory.Below I will attach all my thinking process and progress.
 
+**Module TwoWaySetAssociativeCache**
+
+1. Input and Output
+   - `cpu_address`: 32-bit input representing the CPU address.
+   - `cpu_data_in`: 32-bit input representing data to be written into the cache.
+   - `cpu_write`: Input signal indicating whether a write operation should be performed.
+   - `cpu_read`: Input signal indicating whether a read operation should be performed.
+   - `cpu_data_out`: 32-bit output representing data read from the cache.
+
+```systemverilog
+module TwoWaySetAssociativeCache (
+  input logic [31:0] cpu_address,
+  input logic [31:0] cpu_data_in,
+  input logic cpu_write,
+  input logic cpu_read,
+  output logic [31:0] cpu_data_out
+);
+
+2. Cache parameters & memory arrays
+  - CACHE_SIZE: Parameter specifying the size of the cache (32 bytes).
+  - BLOCK_SIZE: Parameter specifying the size of each cache block (8 bytes).
+  - SETS: Parameter indicating the number of sets in the cache (4 sets).
+  - WAYS: Parameter indicating the number of cache lines per set (2 ways).
+  - cache_memory: Two-dimensional array storing 32-bit data elements for each set and way.
+  - valid: Two-dimensional array of valid bits, one for each set and way.
+
+``` verilog
+  // Cache parameters
+  parameter int CACHE_SIZE = 32; // 32 bytes cache
+  parameter int BLOCK_SIZE = 4; // 4 bytes per block
+  parameter int SETS = 8; // Number of sets
+  parameter int WAYS = 2; // Number of cache lines per set
+
+  // Cache memory arrays
+  logic [31:0] cache_memory [0: SETS-1][0: WAYS-1];
+  logic valid [0: SETS-1][0: WAYS-1];
+```
+
+3. Adress bits extraction
+``` verilog
+  // Cache control signals
+  logic [1:0] offset; 2bits
+  logic [1:0] index; 2 bits
+  logic [27:0] tag;//28 bits
+  logic hit;
+
+  // Extract index and tag from memory address
+  always_comb begin
+    offset = cpu_address[1:0];
+    index = cpu_address[3:2];
+    tag = cpu_address[31:4];
+  end
+
+```
+
+4. Hit determination&read.write operations
+
+The module calculates a hit signal based on whether there is a valid match in either of the two ways within the set.
+During a read operation, it checks if there is a cache hit. If yes, it provides the data from the cache. If no, it initiates a miss.
+During a write operation, it updates the cache with the new data. If there is a cache hit, it can follow a write-through policy, updating both the cache and main memory. 
+
+``` verilog
+ // Hit determination
+  always_comb begin
+    hit = valid[index][0] && (tag == cache_memory[index][0][31:4]) ||
+          valid[index][1] && (tag == cache_memory[index][1][31:4]);
+  end
+  // Cache read and write operations
+  always_ff @(posedge cpu_read or posedge cpu_write) begin
+    if (cpu_read || cpu_write) begin
+      hit = 0;
+      for (int i = 0; i < WAYS; i++) begin
+        if (valid[index][i] && (tag == cache_memory[index][i][31:4])) begin
+          hit = 1;
+          cpu_data_out = cache_memory[index][i];
+        end
+      end
+      
+      if (cpu_write) begin
+        if (hit) begin
+          memory[index * WAYS][31:0] = cpu_data_in;
+        end
+      end
+    end
+  end
+
+```
 ## **Conclusion**
 
 In the collaborative endeavor within our group, we fostered a highly pleasant and seamless working environment. Throughout the project, my team members consistently exhibited kindness and friendliness, providing not only valuable guidance but also significantly contributing to my learning journey. Recognizing that my individual skills may be comparatively weaker, I acknowledge limitations in directly contributing to team tasks. However, the unwavering support and encouragement from the team have been instrumental in inspiring me to broaden my contributions, for which I am sincerely appreciative.
