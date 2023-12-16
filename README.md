@@ -12,23 +12,22 @@
 
 For MacOs:
 
-| Command                      | Function                                             |
-| ---------------------------- | ---------------------------------------------------- |
-| ```source ./mac_f1.sh```           | run the f1 program                                   |
-| ```source ./mac_pdf.sh```          | run the reference program with the gaussian data set |
-| ```source ./mac_pdf.sh sine```     | run the reference with the sine data set             |
-| ```source ./mac_pdf.sh triangle``` | run the reference with the triangle data set         |
-| ```source ./mac_pdf.sh noisy```    | run the reference with the noisy data set            |
+| Command                        | Function                                             |
+| ------------------------------ | ---------------------------------------------------- |
+| `source ./mac_f1.sh`           | run the f1 program                                   |
+| `source ./mac_pdf.sh`          | run the reference program with the gaussian data set |
+| `source ./mac_pdf.sh sine`     | run the reference with the sine data set             |
+| `source ./mac_pdf.sh triangle` | run the reference with the triangle data set         |
+| `source ./mac_pdf.sh noisy`    | run the reference with the noisy data set            |
 
 For Ubuntu:
-| Command                      | Function                                             |
+| Command | Function |
 | ---------------------------- | ---------------------------------------------------- |
-| ```source ./ubuntu_f1.sh```           | run the f1 program                                   |
-| ```source ./ubuntu_pdf.sh```          | run the reference program with the gaussian data set |
-| ```source ./ubuntu_pdf.sh sine```     | run the reference with the sine data set             |
-| ```source ./ubuntu_pdf.sh triangle``` | run the reference with the triangle data set         |
-| ```source ./ubuntu_pdf.sh noisy```    | run the reference with the noisy data set            |
-
+| `source ./ubuntu_f1.sh` | run the f1 program |
+| `source ./ubuntu_pdf.sh` | run the reference program with the gaussian data set |
+| `source ./ubuntu_pdf.sh sine` | run the reference with the sine data set |
+| `source ./ubuntu_pdf.sh triangle` | run the reference with the triangle data set |
+| `source ./ubuntu_pdf.sh noisy` | run the reference with the noisy data set |
 
 ## Overview
 
@@ -58,7 +57,7 @@ Versions:
 
 [Personal Statement: Ze Quan](./statements/ze_quan.md)
 
-[Personal Statement: Yingkai Xu](./statements/Liam.md)
+[Personal Statement: Yingkai Xu](./statements/ying_kai.md)
 
 ## Contribution Table
 
@@ -83,26 +82,26 @@ Overall, the tasks were split into the following categories:
 
 However, throughout the project duration, we helped one another out with each component, and as such, the detailed contributions are shown in the following table:
 
-| Component           | File                              | John | Jay | Ze Quan | Ying Kai |
-| ------------------- | --------------------------------- | ---- | --- | ------- | -------- |
-| Single Cycle        | Branch: main                      |      |     |         |          |
-| ALU                 | alu/alu.sv                        |      |     |         | x        |
-| Register File       | alu/regfile.sv                    |      |     |         | x        |
-| Control Unit        | control/control_unit.sv           | x    |     |         |          |
-| Extend              | control/extend.sv                 | x    |     |         |          |
-| Data Mem            | control/data_memory.sv            | x    |     |         |          |
-| Instruction Mem     | control/instruction_memory.sv     | x    |     |         |          |
-| PC                  | pc/pc.sv                          |      |     | x       |          |
-| Top                 | riscv_top.sv                      |      | x   |         |          |
-| Testing             | f1_riscv_tb.cpp, pdf_riscv_tb.cpp |      | x   |         |          |
-| Shell Files         | mac_f1.sh, mac_pdf.sh, ubuntu_f1.sh, ubuntu_pdf.sh|      | x   |         |          |
-| Pipeline            | Branch: adding_pipeline           |      |     |         |          |
-| Pipeline stages     | pipelines/                        | x    | x   |         |          |
-| Pipeline top        | riscv_top.sv                      | x    | x   |         |          |
-| Hazard Unit         | hazard_unit/hazard_unit.sv        |      | x   |         |          |
-| Data cache          | Branch: pipelined_data_cache      |      |     |         |          |
-| Building data cache | data_cache/data_cache.sv          |      |     | x       | x        |
-| Data cache top      | riscv_top.sv                      | x    | x   |         |          |
+| Component           | File                                               | John | Jay | Ze Quan | Ying Kai |
+| ------------------- | -------------------------------------------------- | ---- | --- | ------- | -------- |
+| Single Cycle        | Branch: main                                       |      |     |         |          |
+| ALU                 | alu/alu.sv                                         |      |     |         | x        |
+| Register File       | alu/regfile.sv                                     |      |     |         | x        |
+| Control Unit        | control/control_unit.sv                            | x    |     |         |          |
+| Extend              | control/extend.sv                                  | x    |     |         |          |
+| Data Mem            | control/data_memory.sv                             | x    |     |         |          |
+| Instruction Mem     | control/instruction_memory.sv                      | x    |     |         |          |
+| PC                  | pc/pc.sv                                           |      |     | x       |          |
+| Top                 | riscv_top.sv                                       |      | x   |         |          |
+| Testing             | f1_riscv_tb.cpp, pdf_riscv_tb.cpp                  |      | x   |         |          |
+| Shell Files         | mac_f1.sh, mac_pdf.sh, ubuntu_f1.sh, ubuntu_pdf.sh |      | x   |         |          |
+| Pipeline            | Branch: adding_pipeline                            |      |     |         |          |
+| Pipeline stages     | pipelines/                                         | x    | x   |         |          |
+| Pipeline top        | riscv_top.sv                                       | x    | x   |         |          |
+| Hazard Unit         | hazard_unit/hazard_unit.sv                         |      | x   |         |          |
+| Data cache          | Branch: pipelined_data_cache                       |      |     |         |          |
+| Building data cache | data_cache/data_cache.sv                           |      |     | x       | x        |
+| Data cache top      | riscv_top.sv                                       | x    | x   |         |          |
 
 ## **Project Directory**
 
